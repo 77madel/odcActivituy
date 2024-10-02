@@ -24,9 +24,9 @@ public class Chapitre {
     private Cours cours;
 
     @OneToMany(mappedBy = "chapitre", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Partie> parties = new ArrayList<>();
+    private List<Partie> parties;
 
     @OneToMany(mappedBy = "chapitre", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> quizList = new ArrayList<>();
+    private List<Quiz> quizList;
 
 }

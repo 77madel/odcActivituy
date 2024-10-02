@@ -7,6 +7,7 @@ import net.minidev.json.annotate.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -32,12 +33,17 @@ public class Activite {
     private int objectifParticipation;
 
     @OneToMany(mappedBy = "activite")
-    private List<Participant> participants = new ArrayList<>();
+    private List<Participant> participants;
+
+    @ManyToMany
+    @JoinTable( name = "cours_activite",
+            joinColumns = @JoinColumn( name = "activite_id" ),
+            inverseJoinColumns = @JoinColumn( name = "cours_id" ) )
+    private List<Cours> cours = new ArrayList<>();
 
     @OneToMany(mappedBy = "activite")
-    @JsonIgnore  // Correct import pour ignorer lors de la sérialisation
-    private List<Etape> etapes = new ArrayList<>();  // Initialisation par défaut
-
+    @JsonIgnore
+    private List<Etape> etapes;
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Activite(Long id) {
         this.id = id;

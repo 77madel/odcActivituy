@@ -6,6 +6,7 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,12 +18,14 @@ public class Cours {
     private Long id;
     private String titre;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "activite_id")
-    private Activite activite;
+    @ManyToMany
+    @JoinTable( name = "cours_activite",
+            joinColumns = @JoinColumn( name = "cours_id" ),
+            inverseJoinColumns = @JoinColumn( name = "activite_id" ) )
+    private List<Activite> activite = new ArrayList<>();
 
     @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chapitre> chapitres = new ArrayList<>();
+    private List<Chapitre> chapitres;
 
 
 }
