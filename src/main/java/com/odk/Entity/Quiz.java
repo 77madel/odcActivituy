@@ -21,10 +21,10 @@ public class Quiz {
 
     private String titre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "chapitre_id")
     private Chapitre chapitre;
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Question> questions;
+//    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Question> questions;
 }

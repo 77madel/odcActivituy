@@ -33,6 +33,7 @@ public class Security {
                 .authorizeHttpRequests(request-> request
                         .requestMatchers("/activite/**").permitAll()
                         .requestMatchers("/cours/**").permitAll()
+                        .requestMatchers("/chapitre/**").permitAll()
                         .requestMatchers("/EntiteOdc/**").permitAll()
                         .requestMatchers("/etape/**").permitAll()
                         .requestMatchers("/participant/**").permitAll()

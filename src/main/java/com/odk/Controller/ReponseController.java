@@ -1,6 +1,5 @@
 package com.odk.Controller;
 
-import com.odk.Entity.Quiz;
 import com.odk.Entity.Reponse;
 import com.odk.Service.Interface.Service.ReponseService;
 import lombok.AllArgsConstructor;

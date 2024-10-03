@@ -1,8 +1,6 @@
 package com.odk.Controller;
 
-import com.odk.Entity.Personnel;
 import com.odk.Entity.SuperAdmin;
-import com.odk.Repository.SuperAdminRepository;
 import com.odk.Service.Interface.Service.SuperAdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

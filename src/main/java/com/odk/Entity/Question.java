@@ -17,7 +17,7 @@ public class Question {
 
     private String type; // QCM ou question ouverte
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 

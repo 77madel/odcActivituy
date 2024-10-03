@@ -1,6 +1,5 @@
 package com.odk.Controller;
 
-import com.odk.Entity.Activite;
 import com.odk.Entity.Role;
 import com.odk.Service.Interface.Service.RoleService;
 import lombok.AllArgsConstructor;

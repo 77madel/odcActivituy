@@ -12,11 +12,11 @@ import java.util.List;
 @Setter
 public class Participant extends Utilisateur {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "activite_id")
     private Activite activite;
 }

@@ -1,11 +1,16 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Etape {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,10 +19,8 @@ public class Etape {
     private String critere;
     private String listeDebut;
     private String resultat;
-    private Statut Statut;
+    private Statut statut;
 
-    @ManyToOne
-    @JoinColumn(name = "activite_id")
-    private Activite activite;
+
 
 }

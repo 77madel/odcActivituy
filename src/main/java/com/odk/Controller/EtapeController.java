@@ -1,7 +1,6 @@
 package com.odk.Controller;
 
 import com.odk.Entity.Etape;
-import com.odk.Entity.Participant;
 import com.odk.Service.Interface.Service.EtapeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,13 +22,13 @@ public class EtapeController {
         return etapeService.add(etape);
     }
 
-    @GetMapping("/ListeEtape")
-    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/liste")
+    @ResponseStatus(HttpStatus.OK)
     public List<Etape> ListerEtape(){
         return etapeService.List();
     }
 
-    @GetMapping("/listeEtape/{id}")
+    @GetMapping("/liste/{id}")
     @ResponseStatus(HttpStatus.FOUND)
     public Optional<Etape> getEtapeParId(@PathVariable Long id){
         return etapeService.findById(id);

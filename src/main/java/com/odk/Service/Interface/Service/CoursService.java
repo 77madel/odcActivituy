@@ -36,8 +36,8 @@ public class CoursService implements CrudService<Cours, Long> {
         if(coursOptional.isPresent()) {
             Cours existingCours = coursOptional.get();
             existingCours.setTitre(cours.getTitre());
-//            existingCours.setActivite(cours.getActivite());
-//            existingCours.setChapitres(cours.getChapitres());
+            existingCours.setActivite(cours.getActivite());
+            existingCours.setChapitre(cours.getChapitre());
             return coursRepository.save(existingCours);
         }
         return null;
@@ -46,6 +46,8 @@ public class CoursService implements CrudService<Cours, Long> {
     @Override
     public void delete(Long id) {
         Optional<Cours> coursOptional = coursRepository.findById(id);
+        coursOptional.get().setActivite(null);
+        coursOptional.get().setChapitre(null);
         coursOptional.ifPresent(cours -> coursRepository.delete(cours));
     }
 }

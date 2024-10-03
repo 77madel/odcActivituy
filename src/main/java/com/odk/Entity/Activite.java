@@ -32,18 +32,21 @@ public class Activite {
     private String description;
     private int objectifParticipation;
 
-    @OneToMany(mappedBy = "activite")
-    private List<Participant> participants;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "etape_id")
+    private Etape etape;
+//
+//    @OneToMany(mappedBy = "activite")
+//    @JsonIgnore
+//    private List<Participant> participants;
 
-    @ManyToMany
-    @JoinTable( name = "cours_activite",
-            joinColumns = @JoinColumn( name = "activite_id" ),
-            inverseJoinColumns = @JoinColumn( name = "cours_id" ) )
-    private List<Cours> cours = new ArrayList<>();
-
-    @OneToMany(mappedBy = "activite")
-    @JsonIgnore
-    private List<Etape> etapes;
+//    @OneToMany
+//    @JsonIgnore
+//    private List<Cours> cours = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "activite")
+//    @JsonIgnore
+//    private List<Etape> etapes;
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Activite(Long id) {
         this.id = id;

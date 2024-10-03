@@ -2,6 +2,7 @@ package com.odk.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,15 +18,16 @@ public class Cours {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titre;
+//    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Chapitre> chapitres;
 
-    @ManyToMany
-    @JoinTable( name = "cours_activite",
-            joinColumns = @JoinColumn( name = "cours_id" ),
-            inverseJoinColumns = @JoinColumn( name = "activite_id" ) )
-    private List<Activite> activite = new ArrayList<>();
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "activite_id")
+    private Activite activite;
 
-    @OneToMany(mappedBy = "cours", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Chapitre> chapitres;
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "chapitre_id")
+    private Chapitre chapitre;
 
 
 }

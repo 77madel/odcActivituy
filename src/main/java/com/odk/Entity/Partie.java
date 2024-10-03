@@ -18,7 +18,7 @@ public class Partie {
 
     private String titre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "chapitre_id")
     private Chapitre chapitre;
 }

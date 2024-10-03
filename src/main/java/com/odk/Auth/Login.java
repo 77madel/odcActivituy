@@ -1,11 +1,9 @@
 package com.odk.Auth;
 
-import com.odk.Entity.Utilisateur;
 import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.Service.JwtUtile;
 import com.odk.dto.ReqRep;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

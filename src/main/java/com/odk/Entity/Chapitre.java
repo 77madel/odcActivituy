@@ -17,16 +17,16 @@ public class Chapitre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String titre;
+    private String nom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cours_id")
-    private Cours cours;
+//    @ManyToOne
+//    @JoinColumn(name = "cours_id")
+//    private Cours cours;
 
-    @OneToMany(mappedBy = "chapitre", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Partie> parties;
-
-    @OneToMany(mappedBy = "chapitre", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Quiz> quizList;
+//    @OneToMany(mappedBy = "chapitre", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Partie> parties;
+//
+//    @OneToMany(mappedBy = "chapitre", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Quiz> quizList;
 
 }

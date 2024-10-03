@@ -1,8 +1,6 @@
 package com.odk.Controller;
 
-import com.odk.Entity.Cours;
 import com.odk.Entity.Question;
-import com.odk.Repository.QuestionRepository;
 import com.odk.Service.Interface.Service.QuestionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

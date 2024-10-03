@@ -1,9 +1,6 @@
 package com.odk.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 public class Personnel extends Utilisateur {
 
-    @ManyToOne
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "entite_id")
     private EntiteOdc entiteOdc;
 }

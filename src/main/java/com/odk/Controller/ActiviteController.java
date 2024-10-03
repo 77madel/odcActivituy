@@ -1,7 +1,6 @@
 package com.odk.Controller;
 
 import com.odk.Entity.Activite;
-import com.odk.Entity.Personnel;
 import com.odk.Service.Interface.Service.ActiviteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,6 +61,7 @@ public class ActiviteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void supprimer(@PathVariable Long id) {
         try {
+
             activiteService.delete(id);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la suppression de l'activité", e);
