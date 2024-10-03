@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,5 +15,5 @@ public class Personnel extends Utilisateur {
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "entite_id")
-    private EntiteOdc entiteOdc;
+    private Entite entite;
 }

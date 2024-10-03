@@ -1,6 +1,8 @@
 package com.odk.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,9 @@ public class Etape {
     private String resultat;
     private Statut statut;
 
-
+    // Ajoutez un constructeur prenant un ID
+    public Etape(Long id) {
+        this.id = id;
+    }
 
 }

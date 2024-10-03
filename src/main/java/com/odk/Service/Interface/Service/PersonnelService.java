@@ -36,7 +36,9 @@ public class PersonnelService implements CrudService<Personnel, Long> {
             throw new RuntimeException("Votre mail est déjà utilisé");
         }
 
-        String encodePassword = passwordEncoder.encode(personnel.getPassword());
+        // Définir un mot de passe
+        String defaultPassword = "motdepasse123";
+        String encodePassword = passwordEncoder.encode(personnel.getPassword() != null ? personnel.getPassword() : defaultPassword);
         personnel.setPassword(encodePassword);
 
         // Vérifier si le rôle "Participant" existe, sinon le créer et sauvegarder

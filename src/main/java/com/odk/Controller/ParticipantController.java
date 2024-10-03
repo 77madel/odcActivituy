@@ -22,14 +22,14 @@ public class ParticipantController {
         return participantService.add(participant);
     }
 
-    @GetMapping("/ListeParticipant")
-    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/liste")
+    @ResponseStatus(HttpStatus.OK)
     public List<Participant> ListerEntite(){
         return participantService.List();
     }
 
-    @GetMapping("/listeParticipant/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/liste/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<Participant> getParticipantParId(@PathVariable Long id){
         return participantService.findById(id);
     }
@@ -41,7 +41,7 @@ public class ParticipantController {
     }
 
     @DeleteMapping("/supprimer/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void  supprimer(@PathVariable Long id){
         participantService.delete(id);
     }

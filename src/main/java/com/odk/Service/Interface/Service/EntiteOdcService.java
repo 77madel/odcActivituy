@@ -1,6 +1,6 @@
 package com.odk.Service.Interface.Service;
 
-import com.odk.Entity.EntiteOdc;
+import com.odk.Entity.Entite;
 import com.odk.Repository.EntiteOdcRepository;
 import com.odk.Service.Interface.CrudService;
 import lombok.AllArgsConstructor;
@@ -11,27 +11,27 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class EntiteOdcService implements CrudService<EntiteOdc, Long> {
+public class EntiteOdcService implements CrudService<Entite, Long> {
 
     private EntiteOdcRepository entiteOdcRepository;
     @Override
-    public EntiteOdc add(EntiteOdc entiteOdc) {
+    public Entite add(Entite entiteOdc) {
         return entiteOdcRepository.save(entiteOdc);
     }
 
     @Override
-    public List<EntiteOdc> List() {
+    public List<Entite> List() {
         return entiteOdcRepository.findAll();
     }
 
     @Override
-    public Optional<EntiteOdc> findById(Long id) {
+    public Optional<Entite> findById(Long id) {
         return entiteOdcRepository.findById(id);
     }
 
     @Override
-    public EntiteOdc update(EntiteOdc entity, Long id) {
-        Optional<EntiteOdc> entiteOdc = entiteOdcRepository.findById(id);
+    public Entite update(Entite entity, Long id) {
+        Optional<Entite> entiteOdc = entiteOdcRepository.findById(id);
         if (entiteOdc.isPresent()) {
             return entiteOdcRepository.save(entity);
         }
@@ -40,7 +40,7 @@ public class EntiteOdcService implements CrudService<EntiteOdc, Long> {
 
     @Override
     public void delete(Long id) {
-        Optional<EntiteOdc> entiteOdc = entiteOdcRepository.findById(id);
+        Optional<Entite> entiteOdc = entiteOdcRepository.findById(id);
         if (entiteOdc.isPresent()) {
             entiteOdcRepository.deleteById(id);
         }

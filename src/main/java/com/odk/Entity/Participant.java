@@ -19,4 +19,5 @@ public class Participant extends Utilisateur {
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "activite_id")
     private Activite activite;
+
 }

@@ -22,14 +22,14 @@ public class PersonnelController {
         return personnelService.add(personnel);
     }
 
-    @GetMapping("/listePersonnel")
-    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/liste")
+    @ResponseStatus(HttpStatus.OK)
     public List<Personnel> ListerPersonnel(){
         return personnelService.List();
     }
 
-    @GetMapping("/listepersonnel/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @GetMapping("/liste/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<Personnel> getPersonnelParId(@PathVariable Long id){
         return personnelService.findById(id);
     }

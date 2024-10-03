@@ -35,7 +35,9 @@ public class SuperAdminService implements CrudService<SuperAdmin, Long> {
             throw new RuntimeException("Votre mail est déjà utilisé");
         }
 
-        String encodePassword = passwordEncoder.encode(superAdmin.getPassword());
+        // Définir un mot de passe
+        String defaultPassword = "motdepasse123";
+        String encodePassword = passwordEncoder.encode(superAdmin.getPassword() != null ? superAdmin.getPassword() : defaultPassword);
         superAdmin.setPassword(encodePassword);
 
         // Vérifier si le rôle "Participant" existe, sinon le créer et sauvegarder

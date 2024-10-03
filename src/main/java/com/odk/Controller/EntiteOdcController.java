@@ -1,6 +1,6 @@
 package com.odk.Controller;
 
-import com.odk.Entity.EntiteOdc;
+import com.odk.Entity.Entite;
 import com.odk.Service.Interface.Service.EntiteOdcService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,25 +17,25 @@ public class EntiteOdcController {
 
     @PostMapping("ajout")
     @ResponseStatus(HttpStatus.CREATED)
-    public EntiteOdc ajouter(@RequestBody EntiteOdc entiteOdc){
+    public Entite ajouter(@RequestBody Entite entiteOdc){
         return entiteOdcService.add(entiteOdc);
     }
 
     @GetMapping("/ListeEntite")
     @ResponseStatus(HttpStatus.FOUND)
-    public List<EntiteOdc> ListerEntite(){
+    public List<Entite> ListerEntite(){
         return entiteOdcService.List();
     }
 
     @GetMapping("/ListeEntite/{id}")
     @ResponseStatus(HttpStatus.FOUND)
-    public Optional<EntiteOdc> getEnitteParId(@PathVariable Long id){
+    public Optional<Entite> getEnitteParId(@PathVariable Long id){
         return entiteOdcService.findById(id);
     }
 
     @PutMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public EntiteOdc Modifier(@PathVariable Long id, @RequestBody EntiteOdc entiteOdc ){
+    public Entite Modifier(@PathVariable Long id, @RequestBody Entite entiteOdc ){
         return entiteOdcService.update(entiteOdc,id);
     }
 

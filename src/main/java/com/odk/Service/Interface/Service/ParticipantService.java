@@ -35,7 +35,9 @@ public class ParticipantService implements CrudService<Participant, Long> {
             throw new RuntimeException("Votre mail est déjà utilisé");
         }
 
-        String encodePassword = passwordEncoder.encode(participant.getPassword());
+        // Définir un mot de passe
+        String defaultPassword = "motdepasse123";
+        String encodePassword = passwordEncoder.encode(participant.getPassword() != null ? participant.getPassword() : defaultPassword);
         participant.setPassword(encodePassword);
 
         // Vérifier si le rôle "Participant" existe, sinon le créer et sauvegarder
@@ -51,7 +53,8 @@ public class ParticipantService implements CrudService<Participant, Long> {
 
     @Override
     public List<Participant> List() {
-        return participantRepository.findAll();
+
+        return participantRepository.findParticipants();
     }
 
     @Override
