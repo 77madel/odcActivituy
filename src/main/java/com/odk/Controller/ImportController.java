@@ -1,6 +1,7 @@
 package com.odk.Controller;
 
 import com.odk.Service.Interface.Service.ImportService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/import")
+@AllArgsConstructor
 public class ImportController {
 
-    @Autowired
     private ImportService importService;
 
     @PostMapping("/participants")

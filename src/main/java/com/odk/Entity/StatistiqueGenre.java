@@ -1,19 +1,23 @@
 package com.odk.Entity;
 
 import com.odk.Enum.Genre;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
 @Setter
+@Getter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class StatistiqueGenre {
+    // Getters et setters
+    private String date;
+    private String genre;
+    private Long count;
 
-    private String mois;
-    private Genre genre;
-    private Long nombreParticipants;
+    // Constructeur
+    public StatistiqueGenre( String genre, Long count) {
+
+        this.genre = genre;
+        this.count = count;
+    }
+
 }

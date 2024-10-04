@@ -54,7 +54,7 @@ public class PersonnelService implements CrudService<Personnel, Long> {
 
     @Override
     public List<Personnel> List() {
-        return personnelRepository.findAll();
+        return personnelRepository.findPersonnels();
     }
 
     @Override

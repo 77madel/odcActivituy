@@ -35,9 +35,8 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "genre", nullable = false)
-    private Genre genre;
+    private String genre;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

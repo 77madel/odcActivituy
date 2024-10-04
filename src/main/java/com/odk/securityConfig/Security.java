@@ -43,6 +43,7 @@ public class Security {
                         .requestMatchers("/role/**").permitAll()
                         .requestMatchers("/reponse/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/reporting/participants-par-genre").permitAll()
                         .requestMatchers("/superadmin/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

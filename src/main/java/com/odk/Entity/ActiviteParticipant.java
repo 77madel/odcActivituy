@@ -1,12 +1,14 @@
 package com.odk.Entity;
 
+import com.odk.Entity.Activite;
+import com.odk.Entity.ActiviteParticipantKey;
+import com.odk.Entity.Participant;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity

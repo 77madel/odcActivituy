@@ -1,8 +1,6 @@
 package com.odk.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +20,4 @@ public class ActiviteParticipantKey implements Serializable {
 
     @Column(name = "participant_id")
     private Long participantId;
-
 }

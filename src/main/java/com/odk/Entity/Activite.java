@@ -39,14 +39,14 @@ public class Activite {
     @JoinColumn(name = "etape_id")
     private Etape etape;
 
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(
-            name = "Activite_Participant",
+            name = "ActiviteParticipant",
             joinColumns = @JoinColumn(name = "activite_id"),
             inverseJoinColumns = @JoinColumn(name = "participant_id")
     )
     private Set<Participant> participants;
-
+*/
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Activite(Long id) {
         this.id = id;
