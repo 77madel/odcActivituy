@@ -29,24 +29,24 @@ public class Activite {
     private Date dateFin;
 
     private String lieu;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
-    private int objectifParticipation;
+
+    private String objectifParticipation;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_id")
     private Etape etape;
-//
-//    @OneToMany(mappedBy = "activite")
-//    @JsonIgnore
-//    private List<Participant> participants;
 
-//    @OneToMany
-//    @JsonIgnore
-//    private List<Cours> cours = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "activite")
-//    @JsonIgnore
-//    private List<Etape> etapes;
+    @ManyToMany
+    @JoinTable(
+            name = "Activite_Participant",
+            joinColumns = @JoinColumn(name = "activite_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private Set<Participant> participants;
+
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Activite(Long id) {
         this.id = id;

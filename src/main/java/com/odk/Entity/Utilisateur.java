@@ -1,5 +1,6 @@
 package com.odk.Entity;
 
+import com.odk.Enum.Genre;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,6 +35,9 @@ public class Utilisateur implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "genre", nullable = false)
+    private Genre genre;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
