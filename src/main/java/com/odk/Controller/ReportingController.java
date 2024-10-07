@@ -1,9 +1,8 @@
-package com.odk.Repository;
+package com.odk.Controller;
 
 import com.odk.Entity.StatistiqueGenre;
 import com.odk.Service.Interface.Service.ReportingService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

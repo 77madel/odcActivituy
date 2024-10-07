@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/EntiteOdc")
+@RequestMapping("/entite")
 @AllArgsConstructor
 public class EntiteOdcController {
     private EntiteOdcService entiteOdcService;
