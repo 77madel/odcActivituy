@@ -30,13 +30,12 @@ public class Utilisateur implements UserDetails {
     private String email;
     private String phone;
     private String password;
+    private String genre;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
-    @Column(name = "genre", nullable = false)
-    private String genre;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

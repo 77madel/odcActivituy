@@ -13,10 +13,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReqRep {
-
-    private int statusCode;
-    private String error;
-    private String message;
     private String token;
     private String refreshToken;
     private String expirationTime;

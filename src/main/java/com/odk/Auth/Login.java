@@ -2,22 +2,24 @@ package com.odk.Auth;
 
 import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.Service.JwtUtile;
+import com.odk.dto.AuthentificationDTO;
 import com.odk.dto.ReqRep;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Slf4j
+@Transactional
 public class Login {
 
     private AuthenticationManager authenticationManager;
@@ -25,44 +27,25 @@ public class Login {
     private UtilisateurRepository utilisateurRepository;
     private JwtUtile jwtUtile;
 
-//    @PostMapping("/login")
-//    public ReqRep login(@RequestBody ReqRep loginRequest) {
-//        ReqRep response = new ReqRep();
-//        try {
-//             Authentication authenticate =   authenticationManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-//            );
-//
-//            Utilisateur user = utilisateurRepository.findByEmail(loginRequest.getEmail())
-//                    .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//            if (authenticate.isAuthenticated()){
-//                return (ReqRep) this.jwtUtile.generate(loginRequest.getEmail());
-//            }
-//            // Ajouter les détails de l'utilisateur dans la réponse
-//            response.setStatusCode(200);
-//            response.setRole(user.getRole());
-//            response.setNom(user.getNom());
-//            response.setPrenom(user.getPrenom());
-//            response.setEmail(user.getEmail());
-//            response.setPhone(user.getPhone());
-//            response.setMessage("Successfully Logged In");
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();  // Afficher l'erreur dans la console
-//            response.setStatusCode(500);
-//            response.setMessage("Authentication failed: " + e.getMessage());
-//        }
-//        return response;
-//    }
-
-    @PostMapping(path ="login")
-    public Map<String, String> connexion(@RequestBody ReqRep loginrequest){
-        final Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginrequest.getEmail(), loginrequest.getPassword())
+    @PostMapping(path = "login")
+    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
+        final Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
-        if (authenticate.isAuthenticated()){
-            return this.jwtUtile.generate(loginrequest.getEmail());
+
+        if(authenticate.isAuthenticated()) {
+            return this.jwtUtile.generate(authentificationDTO.username());
         }
         return null;
     }
+
+   /* @PostMapping(path = "refresh-token")
+    public @ResponseBody Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest) {
+        return this.jwtUtile.refreshToken(refreshTokenRequest);
+    }*/
+
+    /*@PostMapping(path = "deconnexion")
+    public void deconnexion() {
+        this.jwtUtile.deconnexion();
+    }*/
 }

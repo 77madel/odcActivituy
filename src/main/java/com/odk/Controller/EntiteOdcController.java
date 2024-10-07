@@ -22,13 +22,13 @@ public class EntiteOdcController {
     }
 
     @GetMapping("/ListeEntite")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public List<Entite> ListerEntite(){
         return entiteOdcService.List();
     }
 
     @GetMapping("/ListeEntite/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public Optional<Entite> getEnitteParId(@PathVariable Long id){
         return entiteOdcService.findById(id);
     }

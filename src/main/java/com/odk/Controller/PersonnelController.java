@@ -34,7 +34,7 @@ public class PersonnelController {
         return personnelService.findById(id);
     }
 
-    @PutMapping("/modifier/{id}")
+    @PatchMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Personnel Modifier(@PathVariable Long id, @RequestBody Personnel personnel ){
         return personnelService.update(personnel,id);

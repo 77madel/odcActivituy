@@ -64,17 +64,32 @@ public class PersonnelService implements CrudService<Personnel, Long> {
 
     @Override
     public Personnel update(Personnel personnel, Long id) {
-        Optional<Personnel> optionalPersonnel = personnelRepository.findById(id);
-        if (optionalPersonnel.isPresent()) {
+        //Optional<Personnel> optionalPersonnel = personnelRepository.findById(id);
+        return personnelRepository.findById(id).map(
+                p -> {
+                    p.setNom(personnel.getNom());
+                    p.setEmail(personnel.getEmail());
+                    p.setPrenom(personnel.getPrenom());
+                    p.setPhone(personnel.getPhone());
+                    p.setPassword(passwordEncoder.encode(personnel.getPassword()));
+                    p.setEntite(personnel.getEntite());
+                    p.setRole(personnel.getRole());
+                    return personnelRepository.save(p);
+                }).orElseThrow(()-> new RuntimeException("Votre id n'existe pas"));
+        /*if (optionalPersonnel.isPresent()) {
             Personnel personnelUpdate = optionalPersonnel.get();
             personnelUpdate.setNom(personnelUpdate.getNom());
             personnelUpdate.setEmail(personnelUpdate.getEmail());
             personnelUpdate.setPrenom(personnelUpdate.getPrenom());
             personnelUpdate.setPhone(personnelUpdate.getPhone());
+            personnelUpdate.setPassword(passwordEncoder.encode(personnelUpdate.getPassword()));
+            personnelUpdate.setEntite(personnelUpdate.getEntite());
+            personnelUpdate.setRole(personnelUpdate.getRole());
             return personnelRepository.save(personnel);
-        }
+        }*/
 
-        return null;
+        //return null;
+
     }
 
     @Override
