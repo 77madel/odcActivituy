@@ -1,5 +1,6 @@
 package com.odk.Controller;
 
+import com.odk.Entity.ExcelParticipant;
 import com.odk.Service.Interface.Service.ImportService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class ImportController {
 
     private ImportService importService;
 
-    @PostMapping("/participants")
+    /*@PostMapping("/participants")
     public ResponseEntity<?> importerParticipants(@RequestParam("file") MultipartFile file) {
         // Vérification si le fichier est vide
         if (file.isEmpty()) {
@@ -33,6 +34,23 @@ public class ImportController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'importation : " + e.getMessage());
         }
+    }*/
+
+    @PostMapping("/participants")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
+        String message = "";
+        if (ExcelParticipant.hasExcelFormat(file)) {
+            try {
+                importService.save(file);
+                message = "The Excel file is uploaded: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(message);
+            } catch (Exception exp) {
+                message = "The Excel file is not upload: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+            }
+        }
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
 }

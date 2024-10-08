@@ -15,10 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-@Slf4j
-@Service
-public class ImportService {
-    private static final Logger logger = LoggerFactory.getLogger(ImportService.class);
+public interface ImportService {
+   /* private static final Logger logger = LoggerFactory.getLogger(ImportService.class);
 
     @Autowired
     private ParticipantRepository participantRepository;
@@ -50,5 +48,7 @@ public class ImportService {
             logger.error("Erreur de lecture du fichier : {}", e.getMessage());
             throw new RuntimeException("Erreur de lecture du fichier", e);
         }
-    }
+    }*/
+
+    void save(MultipartFile file);
 }
