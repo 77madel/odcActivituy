@@ -70,7 +70,6 @@ public class JwtUtile {
         final Map<String, Object> claims = Map.of(
                 "nom", utilisateur.getNom(),
                 "prenom", utilisateur.getPrenom(),
-                "email", utilisateur.getEmail(),
                 "phone", utilisateur.getPhone(),
                 "role", utilisateur.getRole(),
                 Claims.EXPIRATION, new Date(expirationTime),

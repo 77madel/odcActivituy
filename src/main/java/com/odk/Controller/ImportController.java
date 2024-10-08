@@ -17,11 +17,22 @@ public class ImportController {
 
     @PostMapping("/participants")
     public ResponseEntity<?> importerParticipants(@RequestParam("file") MultipartFile file) {
+        // Vérification si le fichier est vide
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Le fichier ne peut pas être vide.");
+        }
+
+        // Vérification si le fichier a la bonne extension
+        if (!file.getOriginalFilename().endsWith(".xlsx")) {
+            return ResponseEntity.badRequest().body("Le fichier doit être un fichier Excel (.xlsx).");
+        }
+
         try {
             importService.importerParticipants(file);
             return ResponseEntity.ok("Importation réussie");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'importation");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'importation : " + e.getMessage());
         }
     }
+
 }

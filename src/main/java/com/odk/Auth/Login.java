@@ -28,13 +28,13 @@ public class Login {
     private JwtUtile jwtUtile;
 
     @PostMapping(path = "login")
-    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
+    public Map<String, String> connexion(@RequestBody ReqRep loginRequest) {
         final Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
 
         if(authenticate.isAuthenticated()) {
-            return this.jwtUtile.generate(authentificationDTO.username());
+            return this.jwtUtile.generate(loginRequest.getUsername());
         }
         return null;
     }
