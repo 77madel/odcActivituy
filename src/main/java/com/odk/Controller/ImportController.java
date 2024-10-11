@@ -1,13 +1,17 @@
 package com.odk.Controller;
 
 import com.odk.Entity.ExcelParticipant;
+import com.odk.Entity.ResponseMessage;
 import com.odk.Service.Interface.Service.ImportService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/import")
@@ -37,20 +41,24 @@ public class ImportController {
     }*/
 
     @PostMapping("/participants")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
-        String message = "";
+    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Le fichier ne peut pas être vide."));
+        }
+
+        String message;
         if (ExcelParticipant.hasExcelFormat(file)) {
             try {
                 importService.save(file);
-                message = "The Excel file is uploaded: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK).body(message);
-            } catch (Exception exp) {
-                message = "The Excel file is not upload: " + file.getOriginalFilename() + "!";
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
             }
         }
-        message = "Please upload an excel file!";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-    }
 
+        message = "Veuillez télécharger un fichier Excel!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
+    }
 }

@@ -29,7 +29,7 @@ public class EtapeController {
     }
 
     @GetMapping("/liste/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public Optional<Etape> getEtapeParId(@PathVariable Long id){
         return etapeService.findById(id);
     }

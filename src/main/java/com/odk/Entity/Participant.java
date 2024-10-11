@@ -1,5 +1,6 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,8 +17,14 @@ public class Participant extends Utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    /*@ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "activite_id")
-    private Activite activite;
+    private Activite activite;*/
+
+    @OneToMany(mappedBy = "participant")
+    @JsonManagedReference
+    private List<ActiviteParticipant> activites;
+
+
 
 }

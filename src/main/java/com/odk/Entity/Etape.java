@@ -18,10 +18,13 @@ public class Etape {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
-    private String critere;
     private String listeDebut;
     private String resultat;
     private Statut statut;
+
+   @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "critere_id")
+    private Critere critere;
 
     // Ajoutez un constructeur prenant un ID
     public Etape(Long id) {

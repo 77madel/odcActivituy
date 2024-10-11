@@ -41,6 +41,8 @@ public class Security {
                         .requestMatchers("/api/import/participants").permitAll()
                         .requestMatchers("/api/reporting/participants-par-genre").permitAll()
                         .requestMatchers("/superadmin/**").permitAll()
+                        .requestMatchers("/critere/**").permitAll()
+                        .requestMatchers("/vigile/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

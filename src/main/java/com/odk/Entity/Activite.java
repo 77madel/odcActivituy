@@ -1,5 +1,6 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -51,4 +52,9 @@ public class Activite {
     public Activite(Long id) {
         this.id = id;
     }
+
+    @OneToMany(mappedBy = "activite")
+    @JsonManagedReference
+    private List<ActiviteParticipant> participants;
+
 }

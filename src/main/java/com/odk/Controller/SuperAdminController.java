@@ -23,13 +23,13 @@ public class SuperAdminController {
     }
 
     @GetMapping("/listeSuperAdmin")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public List<SuperAdmin> ListerSuperAdmin(){
         return superAdminService.List();
     }
 
     @GetMapping("/listesuperadmin/{id}")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public Optional<SuperAdmin> getPersonnelParId(@PathVariable Long id){
         return superAdminService.findById(id);
     }

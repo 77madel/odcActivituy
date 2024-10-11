@@ -23,6 +23,7 @@ public class ParticipantService implements CrudService<Participant, Long> {
     private UtilisateurRepository utilisateurRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private ActiviteParticipantService activiteParticipantService;
 
     @Override
     public Participant add(Participant participant) {

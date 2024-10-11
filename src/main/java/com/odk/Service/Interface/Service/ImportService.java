@@ -1,7 +1,9 @@
 package com.odk.Service.Interface.Service;
 
+import com.odk.Entity.ExcelParticipant;
 import com.odk.Entity.Participant;
 import com.odk.Repository.ParticipantRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -14,8 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
-public interface ImportService {
+import java.util.List;
+@Service
+@AllArgsConstructor
+public class ImportService {
    /* private static final Logger logger = LoggerFactory.getLogger(ImportService.class);
 
     @Autowired
@@ -50,5 +54,15 @@ public interface ImportService {
         }
     }*/
 
-    void save(MultipartFile file);
+    private ParticipantRepository participantRepository;
+
+    public void save(MultipartFile file) {
+        try {
+            List<Participant> participants = ExcelParticipant.excelToParticipant(file.getInputStream());
+            participantRepository.saveAll(participants);
+        } catch (IOException e) {
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+        }
+    }
+
 }
