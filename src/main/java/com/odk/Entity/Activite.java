@@ -34,7 +34,7 @@ public class Activite {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String objectifParticipation;
+    private int objectifParticipation;
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_id")
@@ -53,8 +53,8 @@ public class Activite {
         this.id = id;
     }
 
-    @OneToMany(mappedBy = "activite")
+   /* @OneToMany(mappedBy = "activite")
     @JsonManagedReference
-    private List<ActiviteParticipant> participants;
+    private List<ActiviteParticipant> participants;*/
 
 }

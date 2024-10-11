@@ -40,7 +40,7 @@ public class ImportController {
         }
     }*/
 
-    @PostMapping("/participants")
+    /*@PostMapping("/participants")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("Le fichier ne peut pas être vide."));
@@ -60,5 +60,7 @@ public class ImportController {
 
         message = "Veuillez télécharger un fichier Excel!";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(message));
-    }
+    }*/
+
+
 }

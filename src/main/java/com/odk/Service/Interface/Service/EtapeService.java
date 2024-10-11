@@ -6,7 +6,6 @@ import com.odk.Service.Interface.CrudService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +27,7 @@ public class EtapeService implements CrudService<Etape, Long> {
 
     @Override
     public Optional<Etape> findById(Long id) {
+
         return etapeRepository.findById(id);
     }
 
@@ -44,5 +44,14 @@ public class EtapeService implements CrudService<Etape, Long> {
     public void delete(Long id) {
         Optional<Etape> optionalEtape = etapeRepository.findById(id);
         optionalEtape.ifPresent(etape -> etapeRepository.delete(etape));
+    }
+
+    // Ajouter les participants à la listeDebut
+    public Etape ajouterParticipantsListeDebut(Long etapeId, List<String> participants) {
+        Etape etape = etapeRepository.findById(etapeId)
+                .orElseThrow(() -> new RuntimeException("Etape non trouvée"));
+
+        etape.getListeDebut().addAll(participants);
+        return etapeRepository.save(etape);
     }
 }

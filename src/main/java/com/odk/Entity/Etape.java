@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -18,8 +21,12 @@ public class Etape {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
-    private String listeDebut;
-    private String resultat;
+
+    @ElementCollection // Pour stocker des listes simples
+    private List<String> listeDebut = new ArrayList<>();
+
+    @ElementCollection
+    private List<String> listeResultat = new ArrayList<>();
     private Statut statut;
 
    @ManyToOne(cascade = CascadeType.DETACH)

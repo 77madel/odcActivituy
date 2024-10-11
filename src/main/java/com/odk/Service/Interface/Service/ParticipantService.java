@@ -36,7 +36,7 @@ public class ParticipantService implements CrudService<Participant, Long> {
             throw new RuntimeException("Votre mail est déjà utilisé");
         }
 
-        // Définir un mot de passe
+       /* // Définir un mot de passe
         String defaultPassword = "motdepasse123";
         String encodePassword = passwordEncoder.encode(participant.getPassword() != null ? participant.getPassword() : defaultPassword);
         participant.setPassword(encodePassword);
@@ -48,7 +48,7 @@ public class ParticipantService implements CrudService<Participant, Long> {
             return roleRepository.save(newRole);  // Sauvegarder le rôle avant de l'associer
         });
 
-        participant.setRole(role);
+        participant.setRole(role);*/
         return participantRepository.save(participant);
     }
 

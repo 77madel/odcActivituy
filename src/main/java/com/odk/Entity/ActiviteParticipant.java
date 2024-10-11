@@ -1,6 +1,7 @@
 package com.odk.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.odk.Entity.Activite;
 import com.odk.Entity.ActiviteParticipantKey;
 import com.odk.Entity.Participant;
@@ -21,7 +22,6 @@ public class ActiviteParticipant {
     @ManyToOne
     @MapsId("activiteId")
     @JoinColumn(name = "activite_id")
-    @JsonBackReference
     private Activite activite;
 
     @ManyToOne

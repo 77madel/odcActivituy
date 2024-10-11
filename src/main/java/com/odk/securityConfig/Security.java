@@ -35,7 +35,7 @@ public class Security {
                         .requestMatchers("/entite/**").permitAll()
                         .requestMatchers("/etape/**").permitAll()
                         .requestMatchers("/participant/**").permitAll()
-                        .requestMatchers("/personnel/**").hasRole("Personnel")
+                        .requestMatchers("/personnel/**").permitAll()
                         .requestMatchers("/role/**").permitAll()
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/api/import/participants").permitAll()
@@ -43,6 +43,8 @@ public class Security {
                         .requestMatchers("/superadmin/**").permitAll()
                         .requestMatchers("/critere/**").permitAll()
                         .requestMatchers("/vigile/**").permitAll()
+                        .requestMatchers("/etape/upload-liste-debut/**").permitAll()
+                        .requestMatchers("/etape/simple-upload/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

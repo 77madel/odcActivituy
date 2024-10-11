@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +25,7 @@ public class PersonnelService implements CrudService<Personnel, Long> {
     private UtilisateurRepository utilisateurRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private EmailService emailService;
 
     @Override
     public Personnel add(Personnel personnel) {
@@ -36,10 +38,13 @@ public class PersonnelService implements CrudService<Personnel, Long> {
             throw new RuntimeException("Votre mail est déjà utilisé");
         }
 
-        // Définir un mot de passe
+        // Définir un mot de passe par défaut si aucun mot de passe n'est fourni
         String defaultPassword = "motdepasse123";
-        String encodePassword = passwordEncoder.encode(personnel.getPassword() != null ? personnel.getPassword() : defaultPassword);
-        personnel.setPassword(encodePassword);
+        String rawPassword = personnel.getPassword() != null ? personnel.getPassword() : defaultPassword;
+
+        // Encoder le mot de passe pour le stockage
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        personnel.setPassword(encodedPassword);
 
         // Vérifier si le rôle "Participant" existe, sinon le créer et sauvegarder
         Role role = roleRepository.findByNom("Personnel").orElseGet(() -> {
@@ -49,7 +54,19 @@ public class PersonnelService implements CrudService<Personnel, Long> {
         });
 
         personnel.setRole(role);
-        return personnelRepository.save(personnel);
+        Personnel savedPersonnel = personnelRepository.save(personnel);
+
+        // Envoyer un email avec le mot de passe et les informations du personnel
+        String sujet = "Bienvenue dans notre équipe";
+        String message = "Bonjour " + personnel.getNom() + ",\n\n"
+                + "Votre compte a été créé avec succès. Voici vos informations de connexion :\n"
+                + "Email : " + personnel.getEmail() + "\n"
+                + "Mot de passe : " + rawPassword + "\n\n"
+                + "Veuillez changer votre mot de passe après votre première connexion.\n\n"
+                + "Cordialement,\n ODC.";
+        emailService.sendSimpleEmail(personnel.getEmail(), sujet, message);
+
+        return savedPersonnel;
     }
 
     @Override
@@ -76,19 +93,6 @@ public class PersonnelService implements CrudService<Personnel, Long> {
                     p.setRole(personnel.getRole());
                     return personnelRepository.save(p);
                 }).orElseThrow(()-> new RuntimeException("Votre id n'existe pas"));
-        /*if (optionalPersonnel.isPresent()) {
-            Personnel personnelUpdate = optionalPersonnel.get();
-            personnelUpdate.setNom(personnelUpdate.getNom());
-            personnelUpdate.setEmail(personnelUpdate.getEmail());
-            personnelUpdate.setPrenom(personnelUpdate.getPrenom());
-            personnelUpdate.setPhone(personnelUpdate.getPhone());
-            personnelUpdate.setPassword(passwordEncoder.encode(personnelUpdate.getPassword()));
-            personnelUpdate.setEntite(personnelUpdate.getEntite());
-            personnelUpdate.setRole(personnelUpdate.getRole());
-            return personnelRepository.save(personnel);
-        }*/
-
-        //return null;
 
     }
 
@@ -96,5 +100,12 @@ public class PersonnelService implements CrudService<Personnel, Long> {
     public void delete(Long id) {
         Optional<Personnel> optionalPersonnel = personnelRepository.findById(id);
         optionalPersonnel.ifPresent(personnel -> personnelRepository.deleteById(id));
+    }
+
+    public List<String> getAllPersonnelEmails() {
+        List<Personnel> personnels = personnelRepository.findAll();
+        return personnels.stream()
+                .map(Personnel::getEmail)
+                .collect(Collectors.toList());
     }
 }
