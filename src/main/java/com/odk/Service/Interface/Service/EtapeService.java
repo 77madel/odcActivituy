@@ -46,12 +46,4 @@ public class EtapeService implements CrudService<Etape, Long> {
         optionalEtape.ifPresent(etape -> etapeRepository.delete(etape));
     }
 
-    // Ajouter les participants à la listeDebut
-    public Etape ajouterParticipantsListeDebut(Long etapeId, List<String> participants) {
-        Etape etape = etapeRepository.findById(etapeId)
-                .orElseThrow(() -> new RuntimeException("Etape non trouvée"));
-
-        etape.getListeDebut().addAll(participants);
-        return etapeRepository.save(etape);
-    }
 }

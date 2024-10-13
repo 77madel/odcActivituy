@@ -1,8 +1,14 @@
 package com.odk.Controller;
 
+import com.odk.Entity.Activite;
 import com.odk.Entity.Etape;
+import com.odk.Entity.Participant;
+import com.odk.Repository.ActiviteRepository;
+import com.odk.Repository.EtapeRepository;
+import com.odk.Repository.ParticipantRepository;
 import com.odk.Service.Interface.Service.EtapeService;
 import com.odk.Service.Interface.Service.ImportService;
+import com.odk.helper.ExcelHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +26,10 @@ public class EtapeController {
 
     private EtapeService etapeService;
     private ImportService excelService;
+    private ParticipantRepository participantRepository;
+    private ActiviteRepository activiteRepository;
+    private EtapeRepository etapeRepository;
+
 
     @PostMapping("/ajout")
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,43 +61,15 @@ public class EtapeController {
         etapeService.delete(id);
     }
 
+    @PostMapping("/{etapeId}/add-debut")
+    public String addParticipantToListeDebut(@PathVariable Long etapeId, @RequestParam String participant) {
+        Etape etape = etapeRepository.findById(etapeId)
+                .orElseThrow(() -> new RuntimeException("Étape non trouvée avec l'ID " + etapeId));
 
-    @PostMapping("/upload-liste-debut/{etapeId}")
-    public ResponseEntity<Etape> uploadListeDebut(@PathVariable Long etapeId, @RequestParam("file") MultipartFile file) {
-        // Debugging pour vérifier si la méthode est appelée
-        System.out.println("Requête reçue pour l'étape ID: " + etapeId);
-        System.out.println("Fichier reçu: " + (file != null ? file.getOriginalFilename() : "Aucun fichier"));
+        etape.addParticipantToDebut(participant);
+        etapeRepository.save(etape);
 
-        if (file == null || file.isEmpty()) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-
-        try {
-            List<String> participants = excelService.lireParticipantsDepuisExcel(file);
-            Optional<Etape> optionalEtape = etapeService.findById(etapeId);
-
-            if (optionalEtape.isPresent()) {
-                Etape etape = optionalEtape.get();
-                etape.getListeDebut().addAll(participants);
-                Etape updatedEtape = etapeService.add(etape);
-                return new ResponseEntity<>(updatedEtape, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return "Participant ajouté à la liste de début avec succès.";
     }
-
-    @PostMapping("/simple-upload")
-    public ResponseEntity<String> simpleUpload(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Aucun fichier reçu");
-        }
-        return ResponseEntity.ok("Fichier reçu : " + file.getOriginalFilename());
-    }
-
 
 }

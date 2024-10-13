@@ -1,15 +1,14 @@
 package com.odk.Service.Interface.Service;
 
+import com.odk.Entity.Activite;
 import com.odk.Entity.Participant;
-import com.odk.Entity.Role;
 import com.odk.Entity.Utilisateur;
+import com.odk.Repository.ActiviteRepository;
 import com.odk.Repository.ParticipantRepository;
-import com.odk.Repository.RoleRepository;
 import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.CrudService;
 import com.odk.Utils.UtilService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +20,17 @@ public class ParticipantService implements CrudService<Participant, Long> {
 
     private ParticipantRepository participantRepository;
     private UtilisateurRepository utilisateurRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleRepository roleRepository;
-    private ActiviteParticipantService activiteParticipantService;
+//    private PasswordEncoder passwordEncoder;
+//    private RoleRepository roleRepository;
+//    private ActiviteParticipantService activiteParticipantService;
+    private ActiviteRepository activiteRepository;
 
     @Override
-    public Participant add(Participant participant) {
+    public Participant add(Participant entity) {
+        return null;
+    }
+
+    public Participant addP(Participant participant, Long activiteId) {
         if(!UtilService.isValidEmail(participant.getEmail())) {
             throw new RuntimeException("Votre mail est invalide");
         }
@@ -36,19 +40,15 @@ public class ParticipantService implements CrudService<Participant, Long> {
             throw new RuntimeException("Votre mail est déjà utilisé");
         }
 
-       /* // Définir un mot de passe
-        String defaultPassword = "motdepasse123";
-        String encodePassword = passwordEncoder.encode(participant.getPassword() != null ? participant.getPassword() : defaultPassword);
-        participant.setPassword(encodePassword);
+        // Vérification si l'activité existe
+        Optional<Activite> activite = activiteRepository.findById(activiteId);
+        if(!activite.isPresent()) {
+            throw new RuntimeException("L'activité avec l'ID " + activiteId + " n'existe pas");
+        }
 
-        // Vérifier si le rôle "Participant" existe, sinon le créer et sauvegarder
-        Role role = roleRepository.findByNom("Participant").orElseGet(() -> {
-            Role newRole = new Role();
-            newRole.setNom("Participant");
-            return roleRepository.save(newRole);  // Sauvegarder le rôle avant de l'associer
-        });
+        // Association du participant à l'activité
+        participant.setActivite(activite.get());
 
-        participant.setRole(role);*/
         return participantRepository.save(participant);
     }
 

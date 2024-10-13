@@ -27,47 +27,38 @@ public class Security {
     private UtilisateurService utilisateurService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(request-> request
-                        .requestMatchers("/activite/**").permitAll()
-                        .requestMatchers("/entite/**").permitAll()
-                        .requestMatchers("/etape/**").permitAll()
-                        .requestMatchers("/participant/**").permitAll()
-                        .requestMatchers("/personnel/**").permitAll()
-                        .requestMatchers("/role/**").permitAll()
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/api/import/participants").permitAll()
-                        .requestMatchers("/api/reporting/participants-par-genre").permitAll()
-                        .requestMatchers("/superadmin/**").permitAll()
-                        .requestMatchers("/critere/**").permitAll()
-                        .requestMatchers("/vigile/**").permitAll()
-                        .requestMatchers("/etape/upload-liste-debut/**").permitAll()
-                        .requestMatchers("/etape/simple-upload/**").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
-                        jwtAuthFilter, UsernamePasswordAuthenticationFilter.class
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // Ajouter un filtre JWT avant le filtre d'authentification par formulaire
+        // http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        // Configurer les autorisations
+        http
+                .cors().and().csrf().disable()  // Désactiver CSRF pour les APIs REST
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // On utilise des tokens, pas des sessions
+                .and()
+                .authorizeHttpRequests( requests -> requests
+                        // Autoriser l'accès à la création d'organisation et d'utilisateur sans authentification
+                        .requestMatchers("/auth/**").permitAll()  // Autoriser les routes d'authentification
+                        .requestMatchers("/participant/**").permitAll()  // Autoriser les routes d'authentification
+                        .requestMatchers("/personnel/**").permitAll()  // Autoriser les routes d'authentification
+                        .requestMatchers("/api/import/**").permitAll()  // Autoriser les routes d'authentification
+                        .requestMatchers("/etape/upload-participants/**").permitAll()  // Autoriser les routes d'authentification
+                        .requestMatchers("/etape//{etapeId}/add-debut/**").permitAll()  // Autoriser les routes d'authentification
+                        .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
                 );
-        return httpSecurity.build();
+//                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+
+        return http.build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(utilisateurService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return daoAuthenticationProvider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

@@ -28,7 +28,7 @@ public class ParticipantController {
     @PostMapping("/ajout")
     @ResponseStatus(HttpStatus.CREATED)
     public Participant ajouter(@RequestBody Participant participant, Activite activite){
-        Participant savedParticipant = participantService.add(participant);
+        Participant savedParticipant = participantService.addP(participant, activite.getId());
         // Créez la clé pour ActiviteParticipant
         ActiviteParticipantKey key = new ActiviteParticipantKey(activite.getId(), savedParticipant.getId());
 

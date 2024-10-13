@@ -1,51 +1,66 @@
 package com.odk.securityConfig;
 
-import com.odk.Entity.Jwt;
-import com.odk.Service.Interface.Service.JwtUtile;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import com.odk.Entity.Utilisateur;
 import com.odk.Service.Interface.Service.UtilisateurService;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import java.io.IOException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Component
 @AllArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthFilter {
 
     private final HandlerExceptionResolver handlerExceptionResolver;
     private UtilisateurService utilisateurService;
-    private JwtUtile jwtService;
+//    private JwtUtile jwtService;
 
+    private final String JWT_SECRET = "N6pMChrUeAVcYLJJaQjfcB7fIcxJkQR7ClWraTEK8dPQFwKfb85KIQH6Fc4PbVVuy0Oi2GFCB9ETRJFjXQShDA";
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = null;
-        String username = null;
-        boolean isTokenExpired = true;
+    private final long JWT_EXPIRATION_MS = 86400000;  // Validité du token (1 jour)
 
-        // Bearer eyJhbGciOiJIUzI1NiJ9.eyJub20iOiJBY2hpbGxlIE1CT1VHVUVORyIsImVtYWlsIjoiYWNoaWxsZS5tYm91Z3VlbmdAY2hpbGxvLnRlY2gifQ.zDuRKmkonHdUez-CLWKIk5Jdq9vFSUgxtgdU1H2216U
-        final String authorization = request.getHeader("Authorization");
-        if(authorization != null && authorization.startsWith("Bearer ")){
-            token = authorization.substring(7);
-            isTokenExpired = jwtService.isTokenExpired(token);
-            username = jwtService.extractUsername(token);
-        }
+    // Générer le token JWT en incluant les informations de l'utilisateur et de son organisation
+    public String generateToken(Authentication authentication, Utilisateur utilisateur, JwtEncoder jwtEncoder) {
 
-        if(!isTokenExpired && username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = utilisateurService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        filterChain.doFilter(request, response);
+        Instant now = Instant.now();
+
+        // Générer le JWT
+        JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
+                .subject(userDetails.getUsername())
+                .claim("email", utilisateur.getEmail())
+                .claim("id", utilisateur.getId())
+                .claim("role", utilisateur.getRole())
+                .issuedAt(now)
+                .expiresAt(now.plus(30, ChronoUnit.DAYS))
+                .build();
+
+        JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS512).type("jwt").build(), jwtClaimsSet);
+
+        return jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
     }
+
+    @Bean
+    JwtEncoder jwtEncoder() {
+        return new NimbusJwtEncoder(new ImmutableSecret<>(JWT_SECRET.getBytes(StandardCharsets.UTF_8)));
+    };
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        SecretKey secretKey = new SecretKeySpec(JWT_SECRET.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
+    };
+
 }

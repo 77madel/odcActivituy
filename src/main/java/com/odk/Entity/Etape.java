@@ -29,6 +29,14 @@ public class Etape {
     private List<String> listeResultat = new ArrayList<>();
     private Statut statut;
 
+    public void addParticipantToDebut(String participant) {
+        this.listeDebut.add(participant);
+    }
+
+    public void addParticipantToResultat(String participant) {
+        this.listeResultat.add(participant);
+    }
+
    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "critere_id")
     private Critere critere;

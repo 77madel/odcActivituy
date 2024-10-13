@@ -3,7 +3,14 @@ package com.odk.dto;
 import com.odk.Entity.Role;
 import lombok.Data;
 
+@Data
+public class AuthentificationDTO {
 
-public record AuthentificationDTO(String username, String password) {
+    private String email;
+    private String username;
+    private String password;
+    private Role role;
+    private String token;
+
 
 }
