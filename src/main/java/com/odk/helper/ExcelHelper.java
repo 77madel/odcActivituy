@@ -8,17 +8,19 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.aspectj.weaver.ast.Test;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 
+@AllArgsConstructor
 public class ExcelHelper {
+
 
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String[] HEADERs = {"Nom", "Prenom", "Email", "Phone", "Genre", "Activite" };
@@ -112,74 +114,6 @@ public class ExcelHelper {
         }
 
         return participants;
-
-//        try {
-////            Workbook workbook = new XSSFWorkbook(is);
-//
-//            Sheet sheet = workbook.getSheetAt(0);
-//            Iterator<Row> rows = sheet.iterator();
-//
-//            List<Participant> participants = new ArrayList<Participant>();
-//
-//            int rowNumber = 0;
-//            while (rows.hasNext()) {
-//                Row currentRow = rows.next();
-//
-//                // skip header
-//                if (rowNumber == 0) {
-//                    rowNumber++;
-//                    continue;
-//                }
-//
-//                Iterator<Cell> cellsInRow = currentRow.iterator();
-//
-//                Participant participant = new Participant();
-//
-//                int cellIdx = 0;
-//                while (cellsInRow.hasNext()) {
-//                    Cell currentCell = cellsInRow.next();
-//
-//                    switch (cellIdx) {
-////                        case 0:
-////                            participant.setId((long) currentCell.getNumericCellValue());
-////                            break;
-//
-//                        case 0:
-//                            participant.setNom(currentCell.getStringCellValue());
-//                            break;
-//
-//                        case 1:
-//                            participant.setPrenom(currentCell.getStringCellValue());
-//                            break;
-//
-//                        case 2:
-//                            participant.setEmail((currentCell.getStringCellValue()));
-//                            break;
-//                        case 3:
-//                            participant.setPhone((currentCell.getStringCellValue()));
-//                            break;
-////                        case 5:
-////                            participant.setGenre((currentCell.getStringCellValue()));
-////                            break;
-////                        case 6:
-////                            participant.setActivite(String.valueOf(currentCell.getStringCellValue()));
-////                            break;
-//                        default:
-//                            break;
-//                    }
-//
-//                    cellIdx++;
-//                }
-//
-//                participants.add(participant);
-//            }
-//
-//            workbook.close();
-//
-//            return participants;
-//        } catch (IOException e) {
-//            throw new RuntimeException("fail to parse Excel file: " + e.getMessage());
-//        }
     }
 
 }

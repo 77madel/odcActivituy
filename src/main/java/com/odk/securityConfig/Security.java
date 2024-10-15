@@ -42,8 +42,10 @@ public class Security {
                         .requestMatchers("/participant/**").permitAll()  // Autoriser les routes d'authentification
                         .requestMatchers("/personnel/**").permitAll()  // Autoriser les routes d'authentification
                         .requestMatchers("/api/import/**").permitAll()  // Autoriser les routes d'authentification
-                        .requestMatchers("/etape/upload-participants/**").permitAll()  // Autoriser les routes d'authentification
-                        .requestMatchers("/etape//{etapeId}/add-debut/**").permitAll()  // Autoriser les routes d'authentification
+                        .requestMatchers("/etape/{id}/participants/upload").permitAll()
+                        .requestMatchers("/etape/**").permitAll()
+                        // Autoriser les routes d'authentification
+                      // Autoriser les routes d'authentification
                         .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
                 );
 //                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));

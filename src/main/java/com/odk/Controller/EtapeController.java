@@ -1,13 +1,9 @@
 package com.odk.Controller;
 
-import com.odk.Entity.Activite;
 import com.odk.Entity.Etape;
-import com.odk.Entity.Participant;
-import com.odk.Repository.ActiviteRepository;
 import com.odk.Repository.EtapeRepository;
-import com.odk.Repository.ParticipantRepository;
 import com.odk.Service.Interface.Service.EtapeService;
-import com.odk.Service.Interface.Service.ImportService;
+import com.odk.dto.EtapeDTO;
 import com.odk.helper.ExcelHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/etape")
@@ -25,10 +20,8 @@ import java.util.Optional;
 public class EtapeController {
 
     private EtapeService etapeService;
-    private ImportService excelService;
-    private ParticipantRepository participantRepository;
-    private ActiviteRepository activiteRepository;
     private EtapeRepository etapeRepository;
+
 
 
     @PostMapping("/ajout")
@@ -39,15 +32,24 @@ public class EtapeController {
 
     @GetMapping("/liste")
     @ResponseStatus(HttpStatus.OK)
-    public List<Etape> ListerEtape(){
-        return etapeService.List();
+    public ResponseEntity<List<Etape>> getAllEtapes() {
+        List<Etape> etapes = etapeService.List();
+
+        // Vérification des données dans listeDebut
+        for (Etape etape : etapes) {
+            if (etape.getListeDebut() == null || etape.getListeDebut().isEmpty()) {
+                System.out.println("ListeDebut est vide pour l'étape : " + etape.getNom());
+            }
+        }
+
+        return new ResponseEntity<>(etapes, HttpStatus.OK);
     }
 
-    @GetMapping("/liste/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Optional<Etape> getEtapeParId(@PathVariable Long id){
-        return etapeService.findById(id);
-    }
+//    @GetMapping("/liste/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Optional<Etape> getEtapeParId(@PathVariable Long id){
+//        return etapeService.findById(id);
+//    }
 
     @PutMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -61,15 +63,40 @@ public class EtapeController {
         etapeService.delete(id);
     }
 
-    @PostMapping("/{etapeId}/add-debut")
-    public String addParticipantToListeDebut(@PathVariable Long etapeId, @RequestParam String participant) {
-        Etape etape = etapeRepository.findById(etapeId)
-                .orElseThrow(() -> new RuntimeException("Étape non trouvée avec l'ID " + etapeId));
+//    @PostMapping("/{id}/participants/upload")
+//    public ResponseEntity<String> uploadParticipantsToEtape(@PathVariable Long id,
+//                                                            @RequestParam("file") MultipartFile file,
+//                                                            @RequestParam("liste") String liste) {
+//        try {
+//            boolean toListeDebut = "debut".equalsIgnoreCase(liste);
+//            etapeService.(id, file, toListeDebut);
+//            return ResponseEntity.ok("Participants ajoutés avec succès à l'étape.");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Erreur lors de l'importation : " + e.getMessage());
+//        }
+//    }
 
-        etape.addParticipantToDebut(participant);
-        etapeRepository.save(etape);
+    @PostMapping("/{id}/participants/upload")
+    public ResponseEntity<String> addParticipants(@PathVariable Long id,
+                                                  @RequestParam MultipartFile file,
+                                                  @RequestParam boolean toListeDebut) {
+        // Journalisez la valeur reçue
+        System.out.println("Valeur toListeDebut reçue : " + toListeDebut);
 
-        return "Participant ajouté à la liste de début avec succès.";
+        try {
+            etapeService.addParticipantsToEtape(id, file, toListeDebut);
+            return ResponseEntity.ok("Participants ajoutés avec succès.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de l'ajout des participants : " + e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/liste/{id}")
+    public ResponseEntity<List<EtapeDTO>> getEtape(@PathVariable Long id) {
+        List<EtapeDTO> etapes = etapeService.getEtapeDTO(id);
+        return new ResponseEntity<>(etapes, HttpStatus.OK);
     }
 
 }

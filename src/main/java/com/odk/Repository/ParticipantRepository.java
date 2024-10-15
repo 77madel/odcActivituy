@@ -10,4 +10,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
     @Query("SELECT u FROM Utilisateur u JOIN u.role r WHERE r.nom = 'Participant'")
     List<Participant> findParticipants();
+
+//    List<Participant> findByEtapeDebut(Long etapeDebutId);
+//    List<Participant> findByEtapeResultat(Long etapeResultatId);
 }

@@ -1,13 +1,14 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
+@Getter
 public class Participant{
 
     @Id
@@ -24,11 +25,17 @@ public class Participant{
     @JoinColumn(name = "activite_id")
     private Activite activite;
 
-/*
-    @OneToMany(mappedBy = "participant")
-    @JsonManagedReference
-    private List<ActiviteParticipant> activites;
-*/
+    // Participant dans la liste début d'une étape
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "etape_debut_id")
+    @JsonBackReference
+    private Etape etapeDebut;
+
+    // Participant dans la liste résultat d'une étape
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "etape_resultat_id")
+    @JsonBackReference
+    private Etape etapeResultat;
 
 
 

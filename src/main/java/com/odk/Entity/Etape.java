@@ -1,8 +1,7 @@
 package com.odk.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,22 +21,35 @@ public class Etape {
     private Long id;
     private String nom;
 
-    @ElementCollection // Pour stocker des listes simples
-    private List<String> listeDebut = new ArrayList<>();
+    // Liste pour les participants de la première étape
+    @OneToMany(mappedBy = "etapeDebut", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Participant> listeDebut = new ArrayList<>();
 
-    @ElementCollection
-    private List<String> listeResultat = new ArrayList<>();
+    // Liste pour les participants de la deuxième étape
+    @OneToMany(mappedBy = "etapeResultat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Participant> listeResultat = new ArrayList<>();
+
     private Statut statut;
 
-    public void addParticipantToDebut(String participant) {
-        this.listeDebut.add(participant);
+    public void addParticipantsToListeDebut(List<Participant> participants) {
+        for (Participant participant : participants) {
+            participant.setEtapeDebut(this);  // Associe à la liste début
+            this.listeDebut.add(participant);
+        }
     }
 
-    public void addParticipantToResultat(String participant) {
-        this.listeResultat.add(participant);
+    public void addParticipantsToListeResultat(List<Participant> participants) {
+        for (Participant participant : participants) {
+            participant.setEtapeResultat(this);  // Associe à la liste résultat
+            this.listeResultat.add(participant);
+        }
     }
 
-   @ManyToOne(cascade = CascadeType.DETACH)
+
+
+    @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "critere_id")
     private Critere critere;
 
@@ -45,5 +57,7 @@ public class Etape {
     public Etape(Long id) {
         this.id = id;
     }
+
+
 
 }
