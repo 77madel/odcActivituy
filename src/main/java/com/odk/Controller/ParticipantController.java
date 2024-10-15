@@ -64,4 +64,10 @@ public class ParticipantController {
         participantService.delete(id);
     }
 
+    @PostMapping("check-in/{id}")
+    public Participant checking(@PathVariable Long id){
+        return participantService.checkInParticipant(id);
+
+    }
+
 }

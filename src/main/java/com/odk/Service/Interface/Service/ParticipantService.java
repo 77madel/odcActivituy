@@ -11,6 +11,7 @@ import com.odk.Utils.UtilService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,5 +82,14 @@ public class ParticipantService implements CrudService<Participant, Long> {
     public void delete(Long id) {
         Optional<Participant> optionalParticipant = participantRepository.findById(id);
         optionalParticipant.ifPresent(participant -> participantRepository.delete(participant));
+    }
+
+    public Participant checkInParticipant(Long participantId) {
+        Participant participant = participantRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("Participant non trouvé avec l'ID : " + participantId));
+
+        participant.setCheckedIn(true);
+        participant.setCheckInTime(LocalDateTime.now());  // Enregistre l'heure de check-in
+        return participantRepository.save(participant);
     }
 }

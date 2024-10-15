@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,10 +18,12 @@ public class Participant{
     private Long id;
     private String nom;
     private String prenom;
-    @Column(unique = true)
     private String email;
     private String phone;
     private String genre;
+    private boolean checkedIn = false;  // Champ pour indiquer si le participant a été vérifié
+    private LocalDateTime checkInTime;  // Champ pour l'heure de check-in
+
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "activite_id")
