@@ -21,14 +21,12 @@ public class Etape {
     private Long id;
     private String nom;
 
-    // Liste pour les participants de la première étape
-    @OneToMany(mappedBy = "etapeDebut", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "etapeDebut", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference("etapeDebutRef")
     private List<Participant> listeDebut = new ArrayList<>();
 
-    // Liste pour les participants de la deuxième étape
     @OneToMany(mappedBy = "etapeResultat", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("etapeResultatRef")
     private List<Participant> listeResultat = new ArrayList<>();
 
     private Statut statut;

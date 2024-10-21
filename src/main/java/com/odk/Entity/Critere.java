@@ -19,4 +19,8 @@ public class Critere {
     private String libelle;
     private String intutile;
     private int point;
+
+    public Critere(Long id) {
+        this.id = id;
+    }
 }

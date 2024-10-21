@@ -47,4 +47,5 @@ public class RoleService implements CrudService<Role, Long> {
         Optional<Role> optionalRole = roleRepository.findById(id);
         optionalRole.ifPresent(role -> roleRepository.delete(role));
     }
+
 }

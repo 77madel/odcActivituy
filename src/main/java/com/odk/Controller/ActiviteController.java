@@ -1,14 +1,19 @@
 package com.odk.Controller;
 
 import com.odk.Entity.Activite;
+import com.odk.Entity.Etape;
 import com.odk.Service.Interface.Service.ActiviteService;
+import com.odk.dto.ActiviteDTO;
+import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -29,12 +34,43 @@ public class ActiviteController {
 
     @GetMapping("/listeActivite")
     @ResponseStatus(HttpStatus.OK)
-    public List<Activite> listerActivite() {
-        try {
-            return activiteService.List();
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la récupération des activités", e);
-        }
+    public List<ActiviteDTO> listerActivite() {
+        return activiteService.List().stream()
+            .map(activite -> {
+                Etape etape = activite.getEtape();
+                List<ParticipantDTO> listeDebutDTO = new ArrayList<>();
+                List<ParticipantDTO> listeResultatDTO = new ArrayList<>();
+
+                if (etape != null) {
+                    // Récupération de listeDebut
+                    listeDebutDTO = etape.getListeDebut().stream()
+                            .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
+                            .collect(Collectors.toList());
+
+                    // Récupération de listeResultat
+                    listeResultatDTO = etape.getListeResultat().stream()
+                            .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
+                            .collect(Collectors.toList());
+
+                    // Log de débogage
+                    System.out.println("Liste Résultat: " + listeResultatDTO);
+                }
+
+                return new ActiviteDTO(
+                        activite.getId(),
+                        activite.getNom(),
+                        activite.getTitre(),
+                        activite.getDateDebut(),
+                        activite.getDateFin(),
+                        activite.getLieu(),
+                        activite.getDescription(),
+                        activite.getObjectifParticipation(),
+                        etape != null ? etape.getStatut() : null,
+                        listeDebutDTO,
+                        listeResultatDTO
+                );
+            })
+            .collect(Collectors.toList());
     }
 
     @GetMapping("/listeActivite/{id}")

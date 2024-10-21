@@ -5,6 +5,7 @@ import com.odk.Entity.Etape;
 import com.odk.Service.Interface.Service.CritereService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,39 +16,36 @@ import java.util.Optional;
 @AllArgsConstructor
 public class CritereController {
 
-    private CritereService critereService;
+    private final CritereService critereService;
 
     @PostMapping("/ajout")
     @ResponseStatus(HttpStatus.CREATED)
-    public Critere ajouter(@RequestBody Critere critere){
-
+    public Critere ajouter(@RequestBody Critere critere) {
         return critereService.add(critere);
     }
 
     @GetMapping("/liste")
     @ResponseStatus(HttpStatus.OK)
-    public List<Critere> Lister(){
-
+    public List<Critere> lister() {
         return critereService.List();
     }
 
     @GetMapping("/liste/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Optional<Critere> getCritereParId(@PathVariable Long id){
-
-        return critereService.findById(id);
+    public ResponseEntity<Critere> getCritereParId(@PathVariable Long id) {
+        return critereService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/modifier/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Critere Modifier(@PathVariable Long id, @RequestBody Critere critere ){
-        return critereService.update(critere,id);
+    public ResponseEntity<Critere> modifier(@PathVariable Long id, @RequestBody Critere critere) {
+        Critere updatedCritere = critereService.update(critere, id);
+        return updatedCritere != null ? ResponseEntity.ok(updatedCritere) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/supprimer/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void  supprimer(@PathVariable Long id){
+    public void supprimer(@PathVariable Long id) {
         critereService.delete(id);
     }
-
 }

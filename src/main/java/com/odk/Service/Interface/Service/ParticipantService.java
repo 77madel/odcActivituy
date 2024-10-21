@@ -8,12 +8,14 @@ import com.odk.Repository.ParticipantRepository;
 import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.CrudService;
 import com.odk.Utils.UtilService;
+import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -57,6 +59,12 @@ public class ParticipantService implements CrudService<Participant, Long> {
     public List<Participant> List() {
 
         return participantRepository.findParticipants();
+    }
+
+    public List<ParticipantDTO> listParticipant() {
+        return participantRepository.findAll().stream()
+                .map(ParticipantDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Override

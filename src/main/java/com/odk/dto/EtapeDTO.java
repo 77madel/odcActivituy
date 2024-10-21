@@ -1,5 +1,7 @@
 package com.odk.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.odk.Enum.Statut;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -10,12 +12,11 @@ public class EtapeDTO {
 
     private Long id;
     private String nom;
+    private Statut statut;
     private List<ParticipantDTO> listeDebut;
     private List<ParticipantDTO> listeResultat;
 
     public EtapeDTO() {
-        this.id = getId();
-        this.nom = getNom();
         this.listeDebut = new ArrayList<>();
         this.listeResultat = new ArrayList<>();
     }

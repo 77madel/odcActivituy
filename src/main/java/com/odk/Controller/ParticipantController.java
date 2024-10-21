@@ -5,9 +5,8 @@ import com.odk.Entity.ActiviteParticipant;
 import com.odk.Entity.ActiviteParticipantKey;
 import com.odk.Entity.Participant;
 import com.odk.Repository.ActiviteParticipantRepository;
-import com.odk.Service.Interface.Service.ActiviteParticipantService;
-import com.odk.Service.Interface.Service.ActiviteService;
 import com.odk.Service.Interface.Service.ParticipantService;
+import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +41,8 @@ public class ParticipantController {
 
     @GetMapping("/liste")
     @ResponseStatus(HttpStatus.OK)
-    public List<Participant> ListerEntite(){
-        return participantService.List();
+    public List<ParticipantDTO> ListerEntite(){
+        return participantService.listParticipant();
     }
 
     @GetMapping("/liste/{id}")
@@ -52,7 +51,7 @@ public class ParticipantController {
         return participantService.findById(id);
     }
 
-    @PutMapping("/modifier/{id}")
+    @PatchMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Participant Modifier(@PathVariable Long id, @RequestBody Participant participant ){
         return participantService.update(participant,id);

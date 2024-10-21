@@ -25,6 +25,8 @@ public class VigileService implements CrudService<Vigile, Long> {
     private UtilisateurRepository utilisateurRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
+    private RoleService roleService;
+    private RoleRepository repositoryRole;
 
     @Override
     public Vigile add(Vigile vigile) {
@@ -65,16 +67,15 @@ public class VigileService implements CrudService<Vigile, Long> {
 
     @Override
     public Vigile update(Vigile vigile, Long id) {
-        Optional<Vigile> optionalVigile = vigileRepository.findById(id);
-        if (optionalVigile.isPresent()) {
-            Vigile vigileUpdate = optionalVigile.get();
-            vigileUpdate.setNom(vigile.getNom());
-            vigileUpdate.setEmail(vigile.getEmail());
-            vigileUpdate.setPrenom(vigile.getPrenom());
-            vigileUpdate.setPhone(vigile.getPhone());
-            return vigileRepository.save(vigile);
-        }
-        return null;
+        //Optional<Vigile> optionalVigile = vigileRepository.findById(id);
+        return vigileRepository.findById(id).map(
+                p -> {
+                    p.setNom(vigile.getNom());
+                    p.setEmail(vigile.getEmail());
+                    p.setPrenom(vigile.getPrenom());
+                    p.setPhone(vigile.getPhone());
+                    return vigileRepository.save(p);
+                }).orElseThrow(()-> new RuntimeException("Votre id n'existe pas"));
     }
 
     @Override

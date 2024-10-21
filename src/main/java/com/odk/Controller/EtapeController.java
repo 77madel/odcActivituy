@@ -1,6 +1,7 @@
 package com.odk.Controller;
 
 import com.odk.Entity.Etape;
+import com.odk.Entity.ResponseMessage;
 import com.odk.Repository.EtapeRepository;
 import com.odk.Service.Interface.Service.EtapeService;
 import com.odk.dto.EtapeDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/etape")
@@ -23,16 +25,17 @@ public class EtapeController {
     private EtapeRepository etapeRepository;
 
 
-
     @PostMapping("/ajout")
     @ResponseStatus(HttpStatus.CREATED)
-    public Etape ajouter(@RequestBody Etape etape){
-        return etapeService.add(etape);
+    public ResponseEntity<Etape> addEtape(@RequestBody Etape etape) {
+        // Validation et ajout à la base de données
+        Etape savedEtape = etapeRepository.save(etape);
+        return ResponseEntity.ok(savedEtape);
     }
 
     @GetMapping("/liste")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Etape>> getAllEtapes() {
+   /* public ResponseEntity<List<Etape>> getAllEtapes() {
         List<Etape> etapes = etapeService.List();
 
         // Vérification des données dans listeDebut
@@ -43,6 +46,10 @@ public class EtapeController {
         }
 
         return new ResponseEntity<>(etapes, HttpStatus.OK);
+    }*/
+
+    public List<EtapeDTO> getAllEtapes() {
+        return etapeService.getAllEtapes(); // Utilise le service pour récupérer les étapes sous forme de DTO
     }
 
 //    @GetMapping("/liste/{id}")
@@ -53,8 +60,10 @@ public class EtapeController {
 
     @PutMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Etape Modifier(@PathVariable Long id, @RequestBody Etape etape ){
-        return etapeService.update(etape,id);
+    public ResponseEntity<Etape> Modifier(@PathVariable Long id, @RequestBody Etape etape ){
+
+      Etape updateEtape =  etapeService.update(etape,id);
+        return ResponseEntity.ok(updateEtape);
     }
 
     @DeleteMapping("/supprimer/{id}")
@@ -77,18 +86,14 @@ public class EtapeController {
 //    }
 
     @PostMapping("/{id}/participants/upload")
-    public ResponseEntity<String> addParticipants(@PathVariable Long id,
-                                                  @RequestParam MultipartFile file,
-                                                  @RequestParam boolean toListeDebut) {
-        // Journalisez la valeur reçue
-        System.out.println("Valeur toListeDebut reçue : " + toListeDebut);
-
+    public ResponseEntity<?> uploadParticipants(@PathVariable Long id, @RequestParam("file") MultipartFile file, @RequestParam boolean toListeDebut) {
         try {
             etapeService.addParticipantsToEtape(id, file, toListeDebut);
-            return ResponseEntity.ok("Participants ajoutés avec succès.");
+            return ResponseEntity.ok(new ResponseMessage("Participants ajoutés avec succès"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erreur lors de l'ajout des participants : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Erreur lors de l'importation du fichier"));
         }
     }
 

@@ -27,18 +27,17 @@ public class Participant{
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "activite_id")
+    @JsonBackReference
     private Activite activite;
 
-    // Participant dans la liste début d'une étape
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_debut_id")
-    @JsonBackReference
+    @JsonBackReference("etapeDebutRef") // Nom unique pour la référence
     private Etape etapeDebut;
 
-    // Participant dans la liste résultat d'une étape
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_resultat_id")
-    @JsonBackReference
+    @JsonBackReference("etapeResultatRef") // Nom unique pour la référence
     private Etape etapeResultat;
 
 

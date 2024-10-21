@@ -35,7 +35,7 @@ public class VigileController {
         return vigileService.findById(id);
     }
 
-    @PutMapping("/modifier/{id}")
+    @PatchMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public Vigile Modifier(@PathVariable Long id, @RequestBody Vigile vigile ){
         return vigileService.update(vigile,id);

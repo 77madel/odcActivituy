@@ -1,5 +1,6 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +39,7 @@ public class Activite {
 
     @ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_id")
+    @JsonIgnore
     private Etape etape;
 
     /*@ManyToMany

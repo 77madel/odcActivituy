@@ -8,7 +8,9 @@ import com.odk.Repository.ParticipantRepository;
 import com.odk.Service.Interface.CrudService;
 import com.odk.dto.EtapeDTO;
 import com.odk.dto.EtapeMapper;
+import com.odk.dto.ParticipantDTO;
 import com.odk.helper.ExcelHelper;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +33,23 @@ public class EtapeService implements CrudService<Etape, Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(EtapeService.class);
 
+    // Convertit une entité Etape en DTO
+    public EtapeDTO convertToDto(Etape etape) {
+        EtapeDTO dto = new EtapeDTO();
+        dto.setId(etape.getId());
+        dto.setNom(etape.getNom());
+        dto.setStatut(etape.getStatut());
+
+        for (Participant participant : etape.getListeDebut()) {
+            dto.getListeDebut().add(new ParticipantDTO(participant));
+        }
+        for (Participant participant : etape.getListeResultat()) {
+            dto.getListeResultat().add(new ParticipantDTO(participant));
+        }
+
+        return dto;
+    }
+
     @Override
     public Etape add(Etape etape) {
         return etapeRepository.save(etape);
@@ -38,6 +59,15 @@ public class EtapeService implements CrudService<Etape, Long> {
     public List<Etape> List() {
         return etapeRepository.findAll();
     }
+
+
+    public List<EtapeDTO> getAllEtapes() {
+        List<Etape> etapes = etapeRepository.findAll();
+        return etapes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public Optional<Etape> findById(Long id) {
@@ -59,26 +89,7 @@ public class EtapeService implements CrudService<Etape, Long> {
         optionalEtape.ifPresent(etape -> etapeRepository.delete(etape));
     }
 
-//    public void addParticipantsToEtape(Long id, MultipartFile file, boolean toListeDebut) throws IOException {
-//        List<Participant> participants = ExcelHelper.excelToTutorials(file, activiteRepository);
-//
-//        // Récupérer l'étape par ID
-//        Etape etape = etapeRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Étape non trouvée avec l'ID : " + id));
-//
-//        // Ajouter les participants à la bonne liste
-//        if (toListeDebut) {
-//            etape.addParticipantsToListeDebut(participants);
-//        } else {
-//            etape.addParticipantsToListeResultat(participants);
-//        }
-//
-//        // Sauvegarder les participants et l'étape
-//        participantRepository.saveAll(participants);
-//        etapeRepository.save(etape);
-//    }
-
-
+    @Transactional
     public void addParticipantsToEtape(Long id, MultipartFile file, boolean toListeDebut) throws IOException {
         // Log de débogage
         System.out.println("toListeDebut : " + toListeDebut);

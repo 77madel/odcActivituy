@@ -1,6 +1,7 @@
 package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Activite;
+import com.odk.Enum.Statut;
 import com.odk.Repository.ActiviteRepository;
 import com.odk.Service.Interface.CrudService;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +40,19 @@ public class ActiviteService implements CrudService<Activite, Long> {
     @Override
     public List<Activite> List() {
         return activiteRepository.findAll();
+    }
+
+    public List<Activite> list() {
+        // Récupérer toutes les activités
+        List<Activite> activites = activiteRepository.findAll();
+
+        // Filtrer les activités dont l'étape a le statut 'EN_COURS'
+        List<Activite> activitesEnCours = activites.stream()
+                .filter(activite -> activite.getEtape() != null &&
+                        Statut.EN_COURS.equals(activite.getEtape().getStatut())) // Vérifie le statut
+                .collect(Collectors.toList());
+
+        return activitesEnCours;
     }
 
     @Override

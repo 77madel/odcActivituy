@@ -44,6 +44,10 @@ public class Security {
                         .requestMatchers("/api/import/**").permitAll()  // Autoriser les routes d'authentification
                         .requestMatchers("/etape/{id}/participants/upload").permitAll()
                         .requestMatchers("/etape/**").permitAll()
+                        .requestMatchers("/activite/**").permitAll()
+                        .requestMatchers("/vigile/**").permitAll()
+                        .requestMatchers("/critere/**").permitAll()
+                        .requestMatchers("/entite/**").permitAll()
                         // Autoriser les routes d'authentification
                       // Autoriser les routes d'authentification
                         .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
