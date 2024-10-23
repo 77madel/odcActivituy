@@ -14,14 +14,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonDeserialize(using = GrantedAuthorityDeserializer.class)
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String nom;
-    private GrantedAuthority authority;
+
+    public Role(Long id) {
+        this.id = id;
+    }
 
 //    @JsonIgnore
 //    @OneToMany(mappedBy = "role")

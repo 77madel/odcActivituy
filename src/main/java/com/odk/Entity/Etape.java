@@ -1,5 +1,6 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.odk.Enum.Statut;
@@ -20,6 +21,10 @@ public class Etape {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
+    @ManyToOne
+    @JoinColumn(name = "activite_id")
+    @JsonBackReference
+    private Activite activite;
 
     @OneToMany(mappedBy = "etapeDebut", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference("etapeDebutRef")

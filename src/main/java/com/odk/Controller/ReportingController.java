@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reporting")
+@RequestMapping("/reporting")
 @AllArgsConstructor
 public class ReportingController {
 
@@ -18,6 +18,12 @@ public class ReportingController {
     @GetMapping("/participants-par-genre")
     public ResponseEntity<List<StatistiqueGenre>> StatistiquesParGenre() {
         List<StatistiqueGenre> stats = reportingService.StatistiquesParGenre();
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/participants-par-genre-homme")
+    public ResponseEntity<List<StatistiqueGenre>> StatistiquesParGenreHomme() {
+        List<StatistiqueGenre> stats = reportingService.StatistiquesParGenreHomme();
         return ResponseEntity.ok(stats);
     }
 }

@@ -15,6 +15,8 @@ public class Entite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
+    private String logo;
+    private String description;
 
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Entite(Long id) {

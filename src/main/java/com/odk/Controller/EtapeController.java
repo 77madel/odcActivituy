@@ -27,38 +27,21 @@ public class EtapeController {
 
     @PostMapping("/ajout")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Etape> addEtape(@RequestBody Etape etape) {
-        // Validation et ajout à la base de données
-        Etape savedEtape = etapeRepository.save(etape);
-        return ResponseEntity.ok(savedEtape);
+    public ResponseEntity<List<Etape>> addEtapes(@RequestBody List<Etape> etapes) {
+        List<Etape> savedEtapes = etapes.stream()
+                .map(etapeRepository::save)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(savedEtapes);
     }
 
     @GetMapping("/liste")
     @ResponseStatus(HttpStatus.OK)
-   /* public ResponseEntity<List<Etape>> getAllEtapes() {
-        List<Etape> etapes = etapeService.List();
-
-        // Vérification des données dans listeDebut
-        for (Etape etape : etapes) {
-            if (etape.getListeDebut() == null || etape.getListeDebut().isEmpty()) {
-                System.out.println("ListeDebut est vide pour l'étape : " + etape.getNom());
-            }
-        }
-
-        return new ResponseEntity<>(etapes, HttpStatus.OK);
-    }*/
 
     public List<EtapeDTO> getAllEtapes() {
         return etapeService.getAllEtapes(); // Utilise le service pour récupérer les étapes sous forme de DTO
     }
 
-//    @GetMapping("/liste/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Optional<Etape> getEtapeParId(@PathVariable Long id){
-//        return etapeService.findById(id);
-//    }
-
-    @PutMapping("/modifier/{id}")
+    @PatchMapping("/modifier/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Etape> Modifier(@PathVariable Long id, @RequestBody Etape etape ){
 
@@ -71,19 +54,6 @@ public class EtapeController {
     public void  supprimer(@PathVariable Long id){
         etapeService.delete(id);
     }
-
-//    @PostMapping("/{id}/participants/upload")
-//    public ResponseEntity<String> uploadParticipantsToEtape(@PathVariable Long id,
-//                                                            @RequestParam("file") MultipartFile file,
-//                                                            @RequestParam("liste") String liste) {
-//        try {
-//            boolean toListeDebut = "debut".equalsIgnoreCase(liste);
-//            etapeService.(id, file, toListeDebut);
-//            return ResponseEntity.ok("Participants ajoutés avec succès à l'étape.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Erreur lors de l'importation : " + e.getMessage());
-//        }
-//    }
 
     @PostMapping("/{id}/participants/upload")
     public ResponseEntity<?> uploadParticipants(@PathVariable Long id, @RequestParam("file") MultipartFile file, @RequestParam boolean toListeDebut) {

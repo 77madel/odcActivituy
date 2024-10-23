@@ -4,8 +4,14 @@ import com.odk.Entity.Entite;
 import com.odk.Service.Interface.Service.EntiteOdcService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,12 +19,30 @@ import java.util.Optional;
 @RequestMapping("/entite")
 @AllArgsConstructor
 public class EntiteOdcController {
+    public static String uploadDir = System.getProperty("user.dir") + "/src/main/resources/images";
     private EntiteOdcService entiteOdcService;
 
-    @PostMapping("ajout")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Entite ajouter(@RequestBody Entite entiteOdc){
-        return entiteOdcService.add(entiteOdc);
+    @PostMapping(value = "/ajouter", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Entite ajouter(
+            @RequestPart("entiteOdc") Entite entiteOdc,
+            @RequestPart("logo") MultipartFile file) throws IOException {
+
+
+        Entite entite = new Entite();
+        entite.setNom(entiteOdc.getNom());
+        entite.setDescription(entiteOdc.getDescription());
+
+        String imageUUID;
+        if (!file.isEmpty()) {
+            imageUUID = file.getOriginalFilename();
+            Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
+            Files.write(fileNameAndPath, file.getBytes());
+        } else {
+            imageUUID = ""; // ou une valeur par défaut
+        }
+
+        entite.setLogo(imageUUID);
+        return entiteOdcService.add(entite);
     }
 
     @GetMapping("/ListeEntite")

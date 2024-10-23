@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ActiviteParticipantService {
 
-    private ActiviteRepository activiteRepository;
-    private ParticipantRepository participantRepository;
-    private ActiviteParticipantRepository activiteParticipantRepository;
+    private final ActiviteRepository activiteRepository;
+    private final ParticipantRepository participantRepository;
+    private final ActiviteParticipantRepository activiteParticipantRepository;
 
     public ActiviteParticipantService(
             ActiviteRepository activiteRepository,
@@ -45,4 +45,6 @@ public class ActiviteParticipantService {
         // Enregistrement dans la base de données
         activiteParticipantRepository.save(activiteParticipant);
     }
+
+
 }

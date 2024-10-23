@@ -48,8 +48,7 @@ public class ActiviteService implements CrudService<Activite, Long> {
 
         // Filtrer les activités dont l'étape a le statut 'EN_COURS'
         List<Activite> activitesEnCours = activites.stream()
-                .filter(activite -> activite.getEtape() != null &&
-                        Statut.EN_COURS.equals(activite.getEtape().getStatut())) // Vérifie le statut
+                .filter(activite -> false) // Vérifie le statut
                 .collect(Collectors.toList());
 
         return activitesEnCours;

@@ -37,10 +37,23 @@ public class Activite {
 
     private int objectifParticipation;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
+    /*@ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_id")
     @JsonIgnore
     private Etape etape;
+*/
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "entite_id")
+    @JsonIgnore
+    private Entite entite;
+
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "typeActivite_id")
+    @JsonIgnore
+    private TypeActivite typeActivite;
+    @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Etape> etape = new ArrayList<>();
 
     /*@ManyToMany
     @JoinTable(

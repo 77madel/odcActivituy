@@ -19,12 +19,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Component
-@AllArgsConstructor
 public class JwtAuthFilter {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
-    private UtilisateurService utilisateurService;
-//    private JwtUtile jwtService;
+    //    private JwtUtile jwtService;
 
     private final String JWT_SECRET = "N6pMChrUeAVcYLJJaQjfcB7fIcxJkQR7ClWraTEK8dPQFwKfb85KIQH6Fc4PbVVuy0Oi2GFCB9ETRJFjXQShDA";
 
@@ -40,7 +37,6 @@ public class JwtAuthFilter {
         // Générer le JWT
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .subject(userDetails.getUsername())
-                .claim("email", utilisateur.getEmail())
                 .claim("id", utilisateur.getId())
                 .claim("role", utilisateur.getRole())
                 .issuedAt(now)

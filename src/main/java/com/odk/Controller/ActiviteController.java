@@ -22,7 +22,7 @@ public class ActiviteController {
 
     private ActiviteService activiteService;
 
-    @PostMapping("/ajout")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Activite ajouter(@RequestBody Activite activite) {
         try {
@@ -32,48 +32,52 @@ public class ActiviteController {
         }
     }
 
-    @GetMapping("/listeActivite")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ActiviteDTO> listerActivite() {
         return activiteService.List().stream()
-            .map(activite -> {
-                Etape etape = activite.getEtape();
-                List<ParticipantDTO> listeDebutDTO = new ArrayList<>();
-                List<ParticipantDTO> listeResultatDTO = new ArrayList<>();
+                .map(activite -> {
+                    List<Etape> etapes = activite.getEtape();
+                    List<ParticipantDTO> listeDebutDTO = new ArrayList<>();
+                    List<ParticipantDTO> listeResultatDTO = new ArrayList<>();
 
-                if (etape != null) {
-                    // Récupération de listeDebut
-                    listeDebutDTO = etape.getListeDebut().stream()
-                            .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
-                            .collect(Collectors.toList());
+                    if (etapes != null) {
+                        for (Etape etape : etapes) {
+                            // Récupération de listeDebut
+                            listeDebutDTO.addAll(etape.getListeDebut().stream()
+                                    .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
+                                    .collect(Collectors.toList()));
 
-                    // Récupération de listeResultat
-                    listeResultatDTO = etape.getListeResultat().stream()
-                            .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
-                            .collect(Collectors.toList());
+                            // Récupération de listeResultat
+                            listeResultatDTO.addAll(etape.getListeResultat().stream()
+                                    .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
+                                    .collect(Collectors.toList()));
 
-                    // Log de débogage
-                    System.out.println("Liste Résultat: " + listeResultatDTO);
-                }
+                            // Log de débogage
+                            System.out.println("Étape: " + etape.getNom() + " Liste Résultat: " + listeResultatDTO);
+                        }
+                    }
 
-                return new ActiviteDTO(
-                        activite.getId(),
-                        activite.getNom(),
-                        activite.getTitre(),
-                        activite.getDateDebut(),
-                        activite.getDateFin(),
-                        activite.getLieu(),
-                        activite.getDescription(),
-                        activite.getObjectifParticipation(),
-                        etape != null ? etape.getStatut() : null,
-                        listeDebutDTO,
-                        listeResultatDTO
-                );
-            })
-            .collect(Collectors.toList());
+                    return new ActiviteDTO(
+                            activite.getId(),
+                            activite.getNom(),
+                            activite.getTitre(),
+                            activite.getDateDebut(),
+                            activite.getDateFin(),
+                            activite.getLieu(),
+                            activite.getDescription(),
+                            activite.getObjectifParticipation(),
+                            etapes != null && !etapes.isEmpty() ? etapes.get(0) : null, // Prend la première étape
+                            activite.getEntite(),
+                            activite.getTypeActivite(),
+                            listeDebutDTO,
+                            listeResultatDTO
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/listeActivite/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Activite> getActiviteParId(@PathVariable Long id) {
         try {
@@ -83,7 +87,7 @@ public class ActiviteController {
         }
     }
 
-    @PutMapping("/modifier/{id}")
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Activite modifier(@PathVariable Long id, @RequestBody Activite activite) {
         try {
@@ -93,7 +97,7 @@ public class ActiviteController {
         }
     }
 
-    @DeleteMapping("/supprimer/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void supprimer(@PathVariable Long id) {
         try {

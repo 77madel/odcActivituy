@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,11 +41,21 @@ public class EtapeService implements CrudService<Etape, Long> {
         dto.setNom(etape.getNom());
         dto.setStatut(etape.getStatut());
 
-        for (Participant participant : etape.getListeDebut()) {
-            dto.getListeDebut().add(new ParticipantDTO(participant));
+        // Initialisation des listes si elles ne le sont pas déjà
+        dto.setListeDebut(new ArrayList<>());
+        dto.setListeResultat(new ArrayList<>());
+
+        // Conversion des participants
+        if (etape.getListeDebut() != null) {
+            dto.setListeDebut(etape.getListeDebut().stream()
+                    .map(ParticipantDTO::new)
+                    .collect(Collectors.toList()));
         }
-        for (Participant participant : etape.getListeResultat()) {
-            dto.getListeResultat().add(new ParticipantDTO(participant));
+
+        if (etape.getListeResultat() != null) {
+            dto.setListeResultat(etape.getListeResultat().stream()
+                    .map(ParticipantDTO::new)
+                    .collect(Collectors.toList()));
         }
 
         return dto;

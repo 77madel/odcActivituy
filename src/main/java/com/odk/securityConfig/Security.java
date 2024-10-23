@@ -20,11 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class Security {
-
-    private JwtAuthFilter jwtAuthFilter;
-    private UtilisateurService utilisateurService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,6 +44,10 @@ public class Security {
                         .requestMatchers("/vigile/**").permitAll()
                         .requestMatchers("/critere/**").permitAll()
                         .requestMatchers("/entite/**").permitAll()
+                        .requestMatchers("/typeActivite/**").permitAll()
+                        .requestMatchers("/utilisateur/**").permitAll()
+                        .requestMatchers("/reporting/**").permitAll()
+                        .requestMatchers("/role/**").permitAll()
                         // Autoriser les routes d'authentification
                       // Autoriser les routes d'authentification
                         .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification

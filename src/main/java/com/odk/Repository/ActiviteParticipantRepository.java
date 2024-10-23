@@ -15,5 +15,13 @@ public interface ActiviteParticipantRepository extends JpaRepository<ActivitePar
             "GROUP BY u.genre")
     List<StatistiqueGenre> StatistiquesParGenre();
 
+    @Query("SELECT new com.odk.Entity.StatistiqueGenre(p.genre, COUNT(ap.participant.id)) " +
+            "FROM ActiviteParticipant ap JOIN ap.participant p " +
+            "WHERE p.genre = 'Homme' " +
+            "GROUP BY p.genre")
+    List<StatistiqueGenre> StatistiquesParGenreHomme();
+
+
+
 }
 
