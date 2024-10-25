@@ -44,6 +44,7 @@ public class Security {
                         .requestMatchers("/vigile/**").permitAll()
                         .requestMatchers("/critere/**").permitAll()
                         .requestMatchers("/entite/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/typeActivite/**").permitAll()
                         .requestMatchers("/utilisateur/**").permitAll()
                         .requestMatchers("/reporting/**").permitAll()

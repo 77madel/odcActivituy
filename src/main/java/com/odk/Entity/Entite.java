@@ -1,9 +1,12 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -17,6 +20,14 @@ public class Entite {
     private String nom;
     private String logo;
     private String description;
+
+    @OneToMany(mappedBy = "entite")
+    @JsonIgnore
+    private List<Activite> activite;
+
+    @OneToOne
+    @JoinColumn(name = "responsable_id", referencedColumnName = "id")
+    private Utilisateur responsable;
 
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Entite(Long id) {

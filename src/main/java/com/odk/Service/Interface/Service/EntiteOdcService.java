@@ -1,7 +1,9 @@
 package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Entite;
+import com.odk.Entity.Utilisateur;
 import com.odk.Repository.EntiteOdcRepository;
+import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.CrudService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import java.util.Optional;
 public class EntiteOdcService implements CrudService<Entite, Long> {
 
     private EntiteOdcRepository entiteOdcRepository;
+    private UtilisateurRepository utilisateurRepository;
     @Override
     public Entite add(Entite entiteOdc) {
         return entiteOdcRepository.save(entiteOdc);
@@ -45,4 +48,13 @@ public class EntiteOdcService implements CrudService<Entite, Long> {
             entiteOdcRepository.deleteById(id);
         }
     }
+
+    public Long getCountOfActivitiesByEntiteId(Long entiteId) {
+        return entiteOdcRepository.countActivitiesByEntiteId(entiteId);
+    }
+
+    public List<Utilisateur> findUtilisateursByRole(String roleName) {
+        return utilisateurRepository.findByRoleNom(roleName);
+    }
+
 }
