@@ -11,6 +11,8 @@ public class AuthentificationDTO {
     private String password;
     private Role role;
     private String token;
+    private String nom;
+    private String prenom;
 
 
 }

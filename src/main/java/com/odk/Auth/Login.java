@@ -33,7 +33,7 @@ public class Login {
 
     @PostMapping("/login")
     public ResponseEntity<AuthentificationDTO> login(@RequestBody AuthentificationDTO authentificationDTO) {
-        // Utilisation de l'authentication Manager pour authentifier l'utilisateur
+        // Authentifier l'utilisateur
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.getUsername(), authentificationDTO.getPassword())
         );
@@ -41,20 +41,26 @@ public class Login {
         // Si l'authentification réussit, définir l'utilisateur dans le contexte de sécurité
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 2. Récupérer l'utilisateur à partir de son email
+        // Récupérer l'utilisateur à partir de son email
         Utilisateur utilisateur = utilisateurRepository.findByEmail(authentificationDTO.getUsername())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet email."));
 
-        // 3. Générer un token JWT avec les informations de l'utilisateur et de l'organisation
+        // Générer un token JWT
         String jwtToken = jwtAuthFilter.generateToken(authentication, utilisateur, jwtEncoder);
+        System.out.println("Token généré : " + jwtToken); // Debug: afficher le token
 
         // Construire l'objet de réponse
         AuthentificationDTO authentificationDTO1 = new AuthentificationDTO();
-        authentificationDTO1.setUsername(authentificationDTO1.getUsername());
-        authentificationDTO1.setToken(jwtToken);  // Retourner le token JWT
+        authentificationDTO1.setUsername(utilisateur.getEmail()); // Utiliser l'email de l'utilisateur
+        authentificationDTO1.setToken(jwtToken); // Retourner le token JWT
+        authentificationDTO1.setRole(utilisateur.getRole()); // Ajouter le rôle de l'utilisateur
+        authentificationDTO1.setNom(utilisateur.getNom()); // Ajouter le nom de l'utilisateur
+        authentificationDTO1.setPrenom(utilisateur.getPrenom()); // Ajouter le prénom de l'utilisateur
 
         return new ResponseEntity<>(authentificationDTO1, HttpStatus.OK);
     }
+
+
 
     // 2. Mot de passe oublié - Envoi d'un lien de réinitialisation
     @PostMapping("/password/forgot")

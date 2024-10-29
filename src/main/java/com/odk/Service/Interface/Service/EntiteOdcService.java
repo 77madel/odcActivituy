@@ -34,12 +34,34 @@ public class EntiteOdcService implements CrudService<Entite, Long> {
 
     @Override
     public Entite update(Entite entity, Long id) {
-        Optional<Entite> entiteOdc = entiteOdcRepository.findById(id);
-        if (entiteOdc.isPresent()) {
-            return entiteOdcRepository.save(entity);
+        Optional<Entite> entiteOdcOpt = entiteOdcRepository.findById(id);
+
+        if (entiteOdcOpt.isPresent()) {
+            Entite existingEntite = entiteOdcOpt.get();
+
+            // Mettre à jour les champs uniquement si de nouvelles valeurs sont fournies
+            if (entity.getNom() != null) {
+                existingEntite.setNom(entity.getNom());
+            }
+            if (entity.getDescription() != null) {
+                existingEntite.setDescription(entity.getDescription());
+            }
+            if (entity.getLogo() != null) {
+                existingEntite.setLogo(entity.getLogo());
+            }
+            if (entity.getResponsable() != null) {
+                existingEntite.setResponsable(entity.getResponsable());
+            }
+            // Mettez à jour d'autres champs nécessaires ici
+
+            // Sauvegarder les modifications dans la base de données
+            return entiteOdcRepository.save(existingEntite);
         }
+
+        // Retourne null si l'entité avec l'ID donné n'existe pas
         return null;
     }
+
 
     @Override
     public void delete(Long id) {

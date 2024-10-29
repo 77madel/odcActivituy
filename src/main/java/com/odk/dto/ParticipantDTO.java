@@ -17,7 +17,7 @@ public class ParticipantDTO {
     private String email;
     private String phone;
     private String genre;
-    private Activite active; // Ajoutez le nom de l'activité
+    private Activite activite; // Ajoutez le nom de l'activité
     private boolean checkedIn;
     private LocalDateTime checkInTime;
 
@@ -43,7 +43,7 @@ public class ParticipantDTO {
         this.checkInTime = participant.getCheckInTime();
 
         // Récupérer le nom de l'activité au lieu de l'ID
-        this.active = participant.getActivite() != null ? participant.getActivite() : null;
+        this.activite = participant.getActivite();
     }
 
     public ParticipantDTO(Long id, String nom) {

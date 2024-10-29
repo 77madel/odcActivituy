@@ -2,6 +2,7 @@ package com.odk.Controller;
 
 import com.odk.Entity.Activite;
 import com.odk.Entity.Etape;
+import com.odk.Enum.Statut;
 import com.odk.Service.Interface.Service.ActiviteService;
 import com.odk.dto.ActiviteDTO;
 import com.odk.dto.ParticipantDTO;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -107,5 +109,61 @@ public class ActiviteController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la suppression de l'activité", e);
         }
     }
+
+
+    @GetMapping("/enCours")
+    public List<ActiviteDTO> listerActiviteEncours() {
+        return activiteService.List().stream()
+                .map(activite -> {
+                    System.out.println("Traitement de l'activité: " + activite.getNom());
+
+                    List<ParticipantDTO> listeDebutDTO = new ArrayList<>();
+                    List<ParticipantDTO> listeResultatDTO = new ArrayList<>();
+
+                    // Filtrer les étapes en cours et remplir les listes de participants uniquement si l'étape est en cours
+                    boolean hasEtapeEnCours = activite.getEtape().stream()
+                            .filter(etape -> Statut.EN_COURS.equals(etape.getStatut()))
+                            .peek(etape -> {
+                                System.out.println("Étape valide en cours trouvée : " + etape.getNom());
+                                listeDebutDTO.addAll(etape.getListeDebut().stream()
+                                        .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
+                                        .toList());
+                                listeResultatDTO.addAll(etape.getListeResultat().stream()
+                                        .map(participant -> new ParticipantDTO(participant.getId(), participant.getNom()))
+                                        .toList());
+                            })
+                            .findAny()
+                            .isPresent();
+
+                    // Retourner l'ActiviteDTO seulement si une étape en cours est présente
+                    if (hasEtapeEnCours) {
+                        System.out.println("Activité avec étape EN_COURS trouvée: " + activite.getNom());
+                        return new ActiviteDTO(
+                                activite.getId(),
+                                activite.getNom(),
+                                activite.getTitre(),
+                                activite.getDateDebut(),
+                                activite.getDateFin(),
+                                activite.getLieu(),
+                                activite.getDescription(),
+                                activite.getObjectifParticipation(),
+                                activite.getEtape().stream()
+                                        .filter(etape -> Statut.EN_COURS.equals(etape.getStatut()))
+                                        .findFirst() // Prend la première étape en cours, s'il y en a
+                                        .orElse(null),
+                                activite.getEntite(),
+                                activite.getTypeActivite(),
+                                listeDebutDTO,
+                                listeResultatDTO
+                        );
+                    }
+                    System.out.println("Aucune étape EN_COURS pour l'activité: " + activite.getNom());
+                    return null;
+                })
+                .filter(Objects::nonNull) // Supprimer les ActiviteDTO null (sans étape en cours)
+                .collect(Collectors.toList());
+    }
+
+
 }
 

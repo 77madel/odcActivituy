@@ -83,11 +83,61 @@ public class EntiteOdcController {
         return entiteOdcService.findById(id);
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Entite Modifier(@PathVariable Long id, @RequestBody Entite entiteOdc ){
-        return entiteOdcService.update(entiteOdc,id);
+    @PatchMapping("/{id}")
+    public ResponseEntity<Entite> modifier(
+            @RequestPart("entiteOdc") String entiteOdcJson,
+            @RequestPart(value = "logo", required = false) MultipartFile logo,
+            @RequestParam(value = "utilisateurId", required = false) Long utilisateurId,
+            @RequestParam("entiteId") Long entiteId) {
+
+        try {
+            // Vérifier si l'entité existe
+            Optional<Entite> entiteOpt = entiteOdcService.findById(entiteId);
+            if (!entiteOpt.isPresent()) {
+                throw new RuntimeException("Entité non trouvée avec l'ID : " + entiteId);
+            }
+
+            Entite entite = entiteOpt.get();
+
+            // Convertir le JSON en objet Entite pour les nouvelles données
+            Entite updatedEntite = objectMapper.readValue(entiteOdcJson, Entite.class);
+
+            // Si un nouveau logo est fourni, sauvegarder le fichier et mettre à jour le chemin
+            if (logo != null) {
+                String imagePath = fileStorage.saveImage(logo);
+                entite.setLogo(imagePath);
+            }
+
+            // Récupérer l'utilisateur par ID et vérifier le rôle
+            Optional<Utilisateur> utilisateurOpt = utilisateurService.findById(utilisateurId);
+            if (utilisateurOpt.isPresent()) {
+                Utilisateur utilisateur = utilisateurOpt.get();
+
+                if (utilisateur.getRole().getNom().equals("Personnel")) {
+                    entite.setResponsable(utilisateur);
+                } else {
+                    throw new RuntimeException("Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
+                }
+            } else {
+                throw new RuntimeException("Utilisateur non trouvé avec l'ID : " + utilisateurId);
+            }
+
+            // Mettre à jour les autres champs de l'entité
+            entite.setNom(updatedEntite.getNom());
+            entite.setDescription(updatedEntite.getDescription());
+            // Mettez à jour les autres champs nécessaires ici
+
+            // Sauvegarder les modifications
+            Entite updatedFormation = entiteOdcService.update(entite,entiteId);
+            return ResponseEntity.ok(updatedFormation);
+
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body(null);  // Erreur de conversion JSON
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Erreurs générales
+        }
     }
+
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
