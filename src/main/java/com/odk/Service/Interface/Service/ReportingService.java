@@ -20,7 +20,7 @@ public class ReportingService {
 
     public List<StatistiqueGenre> StatistiquesParGenreHomme() {
         // Utilisez une requête personnalisée ou QueryDSL
-        return activiteParticipantRepository.StatistiquesParGenreHomme();
+        return activiteParticipantRepository.StatistiquesParGenre();
     }
 
 

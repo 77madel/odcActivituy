@@ -1,9 +1,11 @@
 package com.odk.Auth;
 
+import com.odk.Entity.Role;
 import com.odk.Entity.Utilisateur;
 import com.odk.Repository.UtilisateurRepository;
+import com.odk.Service.Interface.Service.UtilisateurService;
 import com.odk.dto.AuthentificationDTO;
-import com.odk.securityConfig.JwtAuthFilter;
+import com.odk.securityConfig.JwtService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -11,12 +13,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -28,11 +38,12 @@ public class Login {
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
     private UtilisateurRepository utilisateurRepository;
-    private JwtAuthFilter jwtAuthFilter;
-    private JwtEncoder jwtEncoder;
+    private UtilisateurService utilisateurService;
+    private JwtService jwtService;
+    //private JwtEncoder jwtEncoder;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthentificationDTO> login(@RequestBody AuthentificationDTO authentificationDTO) {
+    /*public ResponseEntity<AuthentificationDTO> login(@RequestBody AuthentificationDTO authentificationDTO) {
         // Authentifier l'utilisateur
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.getUsername(), authentificationDTO.getPassword())
@@ -46,7 +57,7 @@ public class Login {
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet email."));
 
         // Générer un token JWT
-        String jwtToken = jwtAuthFilter.generateToken(authentication, utilisateur, jwtEncoder);
+        String jwtToken = jwtAuthFilter.(authentication, utilisateur, jwtEncoder);
         System.out.println("Token généré : " + jwtToken); // Debug: afficher le token
 
         // Construire l'objet de réponse
@@ -58,61 +69,35 @@ public class Login {
         authentificationDTO1.setPrenom(utilisateur.getPrenom()); // Ajouter le prénom de l'utilisateur
 
         return new ResponseEntity<>(authentificationDTO1, HttpStatus.OK);
-    }
+    }*/
 
-
-
-    // 2. Mot de passe oublié - Envoi d'un lien de réinitialisation
-    @PostMapping("/password/forgot")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) throws MessagingException {
-        Utilisateur user = utilisateurRepository.findByEmail(email)
-                .orElse(null);
-        if (user == null) {
-            return new ResponseEntity<>("Utilisateur non trouvé.", HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
+        if (authentificationDTO.getUsername() == null || authentificationDTO.getPassword() == null) {
+            return ResponseEntity.badRequest().body("Nom d'utilisateur et mot de passe requis"); // Réponse 400
         }
 
-//        String resetToken = UUID.randomUUID().toString(); // Générer un token unique
-//        user.setResetToken(resetToken);
-//        user.setTokenExpiry(LocalDateTime.now().plusHours(1)); // Expiration du token dans 1 heure
-//        utilisateurRepository.save(user); // Enregistrer le token dans la base de données
+        try {
+            final Authentication authenticate = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authentificationDTO.getUsername(), authentificationDTO.getPassword())
+            );
 
-//        // Créer un lien de réinitialisation
-//        String resetLink = "http://localhost:4200/reset-password?token=" + resetToken;
-//
-//        // Envoyer l'email
-//        emailService.sendEmailWithResetLink(email, resetLink);
-
-        return new ResponseEntity<>("Lien de réinitialisation envoyé.", HttpStatus.OK);
+            if (authenticate.isAuthenticated()) {
+                Map<String, String> token = this.jwtService.generate(authentificationDTO.getUsername());
+                return ResponseEntity.ok(token);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Échec de l'authentification");
+            }
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nom d'utilisateur ou mot de passe incorrect");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur de connexion: " + e.getMessage());
+        }
     }
 
-    // Réinitialisation du mot de passe
-//    @PostMapping("/reset-password")
-//    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-//        Utilisateur user = utilisateurRepository.findByResetToken(token);
-//        if (user == null || user.getTokenExpiry().isBefore(LocalDateTime.now())) {
-//            return new ResponseEntity<>("Token invalide ou expiré.", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        // Ensure the firebaseUid is not null or empty
-//        if (user.getFirebaseUid() == null || user.getFirebaseUid().isEmpty()) {
-//            return new ResponseEntity<>("Firebase UID est manquant.", HttpStatus.BAD_REQUEST);
-//        }
-//
-//        user.setPassword(passwordEncoder.encode(newPassword)); // Encoder le nouveau mot de passe
-//        user.setResetToken(null); // Réinitialiser le token
-//        user.setTokenExpiry(null); // Réinitialiser l'expiration
-//        utilisateurRepository.save(user);
-//
-//        try {
-//            UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(user.getFirebaseUid())
-//                    .setPassword(newPassword);
-//            FirebaseAuth.getInstance().updateUser(request);
-//        } catch (FirebaseAuthException e) {
-//            return new ResponseEntity<>("Erreur lors de la mise à jour du mot de passe Firebase.", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//        return new ResponseEntity<>("Mot de passe réinitialisé avec succès.", HttpStatus.OK);
-//    }
+
+
+
+
 
     // 3. Déconnexion - Invalider le token JWT si utilisé
     @PostMapping("/logout")

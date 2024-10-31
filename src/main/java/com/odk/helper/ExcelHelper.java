@@ -1,8 +1,12 @@
 package com.odk.helper;
 
 import com.odk.Entity.Activite;
+import com.odk.Entity.ActiviteParticipant;
+import com.odk.Entity.ActiviteParticipantKey;
 import com.odk.Entity.Participant;
+import com.odk.Repository.ActiviteParticipantRepository;
 import com.odk.Repository.ActiviteRepository;
+import com.odk.Repository.ParticipantRepository;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -13,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +27,10 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ExcelHelper {
 
-
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     static String[] HEADERs = {"Nom", "Prenom", "Email", "Phone", "Genre", "Activite" };
     static String SHEET = "Participants";
+
 
     public static boolean hasExcelFormat(MultipartFile file) {
 
@@ -68,7 +74,7 @@ public class ExcelHelper {
         }
     }
 
-    public static List<Participant> excelToTutorials(MultipartFile is, ActiviteRepository activiteRepository) throws IOException {
+    public static List<Participant> excelToTutorials(MultipartFile is, ActiviteRepository activiteRepository, ActiviteParticipantRepository activiteParticipantRepository, ParticipantRepository participantRepository) throws IOException {
 
         XSSFWorkbook workbook = new XSSFWorkbook(is.getInputStream());
         XSSFSheet worksheet = (XSSFSheet) workbook.getSheetAt(0);
@@ -94,7 +100,7 @@ public class ExcelHelper {
                 throw new RuntimeException("Type de cellule inattendu pour le téléphone");
             }
             participant.setGenre(row.getCell(4).getStringCellValue());
-            if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {
+            /*if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {
                 String nom = row.getCell(5).getStringCellValue();
 
                 // Chercher l'activité par nom dans la base de données
@@ -108,7 +114,40 @@ public class ExcelHelper {
             } else {
 
                 throw new RuntimeException("La cellule de l'activité est vide ou contient un type incorrect.");
+            }*/
+
+            // Vérification si la cellule de l'activité est non nulle et de type chaîne
+            if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {
+                String nomActivite = row.getCell(5).getStringCellValue();
+                Optional<Activite> activiteOptional = activiteRepository.findByNom(nomActivite);
+
+                if (activiteOptional.isPresent()) {
+                    participant.setActivite(activiteOptional.get());
+
+                    // Enregistrez le participant d'abord pour obtenir un ID valide
+                    participantRepository.save(participant);
+
+                    // Création de la clé composite pour l'entité ActiviteParticipant
+                    ActiviteParticipant activiteParticipant = new ActiviteParticipant();
+                    ActiviteParticipantKey key = new ActiviteParticipantKey();
+                    key.setActiviteId(activiteOptional.get().getId());
+                    key.setParticipantId(participant.getId()); // Participant ID devrait maintenant être défini
+
+                    activiteParticipant.setId(key);
+                    activiteParticipant.setActivite(activiteOptional.get());
+                    activiteParticipant.setParticipant(participant);
+                    activiteParticipant.setDate(LocalDate.now()); // Définissez la date
+
+                    // Enregistrement de l'ActiviteParticipant
+                    activiteParticipantRepository.save(activiteParticipant);
+                } else {
+                    throw new RuntimeException("L'activité " + nomActivite + " n'existe pas dans la base de données.");
+                }
+            } else {
+                throw new RuntimeException("La cellule de l'activité est vide ou contient un type incorrect.");
             }
+
+
 
             participants.add(participant);
         }

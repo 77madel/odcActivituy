@@ -30,5 +30,5 @@ public class ActiviteParticipant {
     @JsonBackReference
     private Participant participant;
 
-    private LocalDate dateFormation;
+    private LocalDate date;
 }

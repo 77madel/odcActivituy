@@ -2,6 +2,7 @@ package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Etape;
 import com.odk.Entity.Participant;
+import com.odk.Repository.ActiviteParticipantRepository;
 import com.odk.Repository.ActiviteRepository;
 import com.odk.Repository.EtapeRepository;
 import com.odk.Repository.ParticipantRepository;
@@ -31,6 +32,7 @@ public class EtapeService implements CrudService<Etape, Long> {
     private EtapeRepository etapeRepository;
     private ActiviteRepository activiteRepository;
     private ParticipantRepository participantRepository;
+    private ActiviteParticipantRepository activiteParticipantRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(EtapeService.class);
 
@@ -106,7 +108,7 @@ public class EtapeService implements CrudService<Etape, Long> {
         System.out.println("toListeDebut : " + toListeDebut);
 
         // Convertir le fichier Excel en une liste de participants
-        List<Participant> participants = ExcelHelper.excelToTutorials(file, activiteRepository);
+        List<Participant> participants = ExcelHelper.excelToTutorials(file, activiteRepository, activiteParticipantRepository, participantRepository);
 
         // Récupérer l'étape par ID
         Etape etape = etapeRepository.findById(id)

@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,9 +21,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class Security {
 
-    @Bean
+    private JwtFilter jwtFilter;
+    private UserDetailsService userDetailsService;
+    private PasswordEncoder passwordEncoder;
+
+   /* @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Ajouter un filtre JWT avant le filtre d'authentification par formulaire
         // http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -41,12 +47,14 @@ public class Security {
                         .requestMatchers("/etape/{id}/participants/upload").permitAll()
                         .requestMatchers("/etape/**").permitAll()
                         .requestMatchers("/activite/**").permitAll()
+                        .requestMatchers("/activite/enCours").permitAll()
                         .requestMatchers("/vigile/**").permitAll()
                         .requestMatchers("/critere/**").permitAll()
                         .requestMatchers("/entite/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/typeActivite/**").permitAll()
                         .requestMatchers("/utilisateur/**").permitAll()
+                        .requestMatchers("/utilisateur/change-password").authenticated()
                         .requestMatchers("/reporting/**").permitAll()
                         .requestMatchers("/role/**").permitAll()
                         // Autoriser les routes d'authentification
@@ -67,5 +75,54 @@ public class Security {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }*/
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return
+                httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        authorize ->
+                                authorize
+                                        .requestMatchers("/auth/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/participant/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/personnel/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/api/import/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/etape/{id}/participants/upload").permitAll()
+                                        .requestMatchers("/etape/**").permitAll()
+                                        .requestMatchers("/activite/**").permitAll()
+                                        .requestMatchers("/activite/enCours").permitAll()
+                                        .requestMatchers("/vigile/**").permitAll()
+                                        .requestMatchers("/critere/**").authenticated()
+                                        .requestMatchers("/entite/**").permitAll()
+                                        .requestMatchers("/images/**").permitAll()
+                                        .requestMatchers("/typeActivite/**").permitAll()
+                                        .requestMatchers("/utilisateur/**").permitAll()
+                                        .requestMatchers("/utilisateur/change-password").authenticated()
+                                        .requestMatchers("/reporting/**").permitAll()
+                                        .requestMatchers("/role/**").permitAll()
+                                        .anyRequest().authenticated()
+                )
+                .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+
+    @Bean
+    public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider () {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+        return daoAuthenticationProvider;
     }
 }

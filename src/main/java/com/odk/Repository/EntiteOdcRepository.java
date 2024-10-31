@@ -13,4 +13,6 @@ public interface EntiteOdcRepository extends JpaRepository<Entite, Long> {
     @Query("SELECT COUNT(a) FROM Activite a WHERE a.entite.id = :entiteId")
     Long countActivitiesByEntiteId(@Param("entiteId") Long entiteId);
 
+    long count();
+
 }

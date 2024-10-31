@@ -1,21 +1,35 @@
 package com.odk.Controller;
 
 import com.odk.Entity.Utilisateur;
+import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.Service.UtilisateurService;
+import com.odk.dto.ChangePasswordDTO;
 import com.odk.dto.UtilisateurDTO;
+import com.odk.execption.IncorrectPasswordException;
+import com.odk.execption.UtilisateurNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/utilisateur")
 @AllArgsConstructor
 public class UtilisateurController {
 
+    private final UtilisateurRepository utilisateurRepository;
     private UtilisateurService utilisateurService;
+    private static final Logger logger = LoggerFactory.getLogger(UtilisateurController.class);
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,5 +63,16 @@ public class UtilisateurController {
 
         utilisateurService.delete(id);
     }
+
+    @GetMapping("/nombre") // Pas de paramètres
+    public ResponseEntity<Long> getNombreUtilisateurs() {
+        long count = utilisateurService.getNombreUtilisateurs();
+        return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs
+    }
+
+   @PostMapping("/change-password")
+   public void modifierMotDePasse(@RequestBody Map<String, String> activation) {
+       this.utilisateurService.modifierMotDePasse(activation);
+   }
 
 }

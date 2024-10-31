@@ -3,11 +3,14 @@ package com.odk.Controller;
 import com.odk.Entity.Activite;
 import com.odk.Entity.Etape;
 import com.odk.Enum.Statut;
+import com.odk.Repository.ActiviteRepository;
+import com.odk.Repository.EtapeRepository;
 import com.odk.Service.Interface.Service.ActiviteService;
 import com.odk.dto.ActiviteDTO;
 import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,7 +25,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/activite")
 public class ActiviteController {
 
+    private final ActiviteRepository activiteRepository;
     private ActiviteService activiteService;
+    private EtapeRepository etapeRepository;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -164,6 +169,28 @@ public class ActiviteController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/nombre") // Pas de paramètres
+    public ResponseEntity<Long> getNombreActivite() {
+        long count = activiteRepository.count();
+        return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs
+    }
 
+    @GetMapping("/nombreActivitesEncours")
+    public ResponseEntity<Long> getNombreActivitesEncours() {
+        long count = activiteRepository.countActivitesByStatut(Statut.EN_COURS); // Compte les activités avec statut "En_Cours"
+        return ResponseEntity.ok(count); // Retourne le nombre d'activités
+    }
+
+    @GetMapping("/nombreActivitesEnAttente")
+    public ResponseEntity<Long> getNombreActivitesEnAttente() {
+        long count = activiteRepository.countActivitesByStatut(Statut.EN_ATTENTE); // Compte les activités avec statut "En_Cours"
+        return ResponseEntity.ok(count); // Retourne le nombre d'activités
+    }
+
+    @GetMapping("/nombreActivitesTerminer")
+    public ResponseEntity<Long> getNombreActivitesTerminer() {
+        long count = activiteRepository.countActivitesByStatut(Statut.TERMINE); // Compte les activités avec statut "En_Cours"
+        return ResponseEntity.ok(count); // Retourne le nombre d'activités
+    }
 }
 

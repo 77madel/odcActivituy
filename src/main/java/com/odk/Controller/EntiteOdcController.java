@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odk.Entity.Entite;
 import com.odk.Entity.Utilisateur;
+import com.odk.Repository.EntiteOdcRepository;
 import com.odk.Service.Interface.Service.EntiteOdcService;
 import com.odk.Service.Interface.Service.FileStorage;
 import com.odk.Service.Interface.Service.UtilisateurService;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class EntiteOdcController {
 
+    private final EntiteOdcRepository entiteOdcRepository;
     private ObjectMapper objectMapper;
     private EntiteOdcService entiteOdcService;
     private FileStorage fileStorage;
@@ -178,6 +180,11 @@ public class EntiteOdcController {
         return entiteOdcService.getCountOfActivitiesByEntiteId(id);
     }
 
+    @GetMapping("/nombre") // Pas de paramètres
+    public ResponseEntity<Long> getNombreEntite() {
+        long count = entiteOdcRepository.count();
+        return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs
+    }
 
 
 }

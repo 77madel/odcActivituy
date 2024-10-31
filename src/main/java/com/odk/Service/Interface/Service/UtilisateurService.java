@@ -7,7 +7,11 @@ import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.CrudService;
 import com.odk.Utils.UtilService;
 import com.odk.dto.UtilisateurDTO;
+import com.odk.execption.IncorrectPasswordException;
+import com.odk.execption.UtilisateurNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -139,4 +145,41 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
         optionalUtilisateur.ifPresent(personnel -> utilisateurRepository.deleteById(id));
 
     }
+
+    public long getNombreUtilisateurs() {
+        return utilisateurRepository.count(); // Retourne le nombre d'utilisateurs
+    }
+
+    public void modifierMotDePasse(Map<String, String> parametres) {
+        String ancienMotDePasse = parametres.get("ancienPassword");
+        String nouveauMotDePasse = parametres.get("newPassword");
+
+        // Obtenir l'utilisateur connecté
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName(); // On suppose que le nom de l'utilisateur est son email
+
+        Optional<Utilisateur> optionalUtilisateur = utilisateurRepository.findByEmail(email);
+
+        if (optionalUtilisateur.isPresent()) {
+            Utilisateur utilisateur = optionalUtilisateur.get();
+
+            // Vérifier si l'ancien mot de passe est correct
+            if (passwordEncoder.matches(ancienMotDePasse, utilisateur.getPassword())) {
+                // Vérifiez si le nouveau mot de passe est différent de l'ancien
+                if (!ancienMotDePasse.equals(nouveauMotDePasse)) {
+                    utilisateur.setPassword(passwordEncoder.encode(nouveauMotDePasse));
+                    utilisateurRepository.save(utilisateur);
+                } else {
+                    throw new IllegalArgumentException("Le nouveau mot de passe ne peut pas être le même que l'ancien.");
+                }
+            } else {
+                throw new IllegalArgumentException("L'ancien mot de passe est incorrect.");
+            }
+        } else {
+            throw new NoSuchElementException("Utilisateur avec cet email n'existe pas.");
+        }
+    }
+
+
+
 }
