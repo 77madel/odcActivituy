@@ -30,11 +30,13 @@ public class ActiviteController {
     private EtapeRepository etapeRepository;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public Activite ajouter(@RequestBody Activite activite) {
         try {
             return activiteService.add(activite);
+        } catch (ResponseStatusException e) {
+            throw e; // Laissez passer l'exception si elle provient de la méthode add
         } catch (Exception e) {
+            // Log de l'erreur
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de l'ajout de l'activité", e);
         }
     }

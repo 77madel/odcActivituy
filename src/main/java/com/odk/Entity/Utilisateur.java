@@ -1,5 +1,6 @@
 package com.odk.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -39,6 +40,10 @@ public class Utilisateur implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "entite_id")
     private Entite entite;
+
+    @Transient
+    @JsonIgnore
+    private Collection<? extends GrantedAuthority> authorities;
 
 
     @Override

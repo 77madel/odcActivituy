@@ -102,6 +102,7 @@ public class Security {
                                         .requestMatchers("/utilisateur/change-password").authenticated()
                                         .requestMatchers("/reporting/**").permitAll()
                                         .requestMatchers("/role/**").permitAll()
+                                        .requestMatchers("/blacklist/**").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->

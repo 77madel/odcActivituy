@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 @Entity
 @Data
@@ -24,6 +25,7 @@ public class Role {
     public Role(Long id) {
         this.id = id;
     }
+
 
 //    @JsonIgnore
 //    @OneToMany(mappedBy = "role")

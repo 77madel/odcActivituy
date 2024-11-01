@@ -5,10 +5,13 @@ import com.odk.Entity.ActiviteParticipant;
 import com.odk.Entity.ActiviteParticipantKey;
 import com.odk.Entity.Participant;
 import com.odk.Repository.ActiviteParticipantRepository;
+import com.odk.Repository.BlackListRepository;
+import com.odk.Service.Interface.Service.BlackListService;
 import com.odk.Service.Interface.Service.ParticipantService;
 import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,6 +25,7 @@ public class ParticipantController {
 
     private ParticipantService participantService;
     private ActiviteParticipantRepository activiteParticipantRepository;
+    private BlackListService blackListService;
 
 
     @PostMapping("/ajout")
@@ -67,6 +71,15 @@ public class ParticipantController {
     public Participant checking(@PathVariable Long id){
         return participantService.checkInParticipant(id);
 
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<String> checkParticipant(@RequestParam String email, @RequestParam String phone) {
+        boolean isBlacklisted = blackListService.isParticipantBlacklisted(email, phone);
+        if (isBlacklisted) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Participant is blacklisted");
+        }
+        return ResponseEntity.ok("Participant is not blacklisted");
     }
 
 }
