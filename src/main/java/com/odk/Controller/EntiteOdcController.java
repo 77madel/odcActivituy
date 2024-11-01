@@ -24,6 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/entite")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class EntiteOdcController {
 
     private final EntiteOdcRepository entiteOdcRepository;
