@@ -9,7 +9,9 @@ class CORSOrigin implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // Autorise toutes les requêtes
-                .allowedOrigins("http://localhost:4200") // Origine autorisée
+                .allowedOriginPatterns("*") // Permet toutes les origines qui correspondent au motif
+                .allowedOriginPatterns("http://localhost:50950/") // Permet toutes les origines qui correspondent au motif
+                .allowedOriginPatterns("http://localhost:4200/") // Permet toutes les origines qui correspondent au motif
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Méthodes autorisées
                 .allowedHeaders("*") // Autorise tous les en-têtes
                 .allowCredentials(true); // Autorise l'envoi des cookies

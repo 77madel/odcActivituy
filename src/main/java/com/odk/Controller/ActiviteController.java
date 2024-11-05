@@ -129,7 +129,7 @@ public class ActiviteController {
 
                     // Filtrer les étapes en cours et remplir les listes de participants uniquement si l'étape est en cours
                     boolean hasEtapeEnCours = activite.getEtape().stream()
-                            .filter(etape -> Statut.EN_COURS.equals(etape.getStatut()))
+                            .filter(etape -> Statut.En_Cours.equals(etape.getStatut()))
                             .peek(etape -> {
                                 System.out.println("Étape valide en cours trouvée : " + etape.getNom());
                                 listeDebutDTO.addAll(etape.getListeDebut().stream()
@@ -155,7 +155,7 @@ public class ActiviteController {
                                 activite.getDescription(),
                                 activite.getObjectifParticipation(),
                                 activite.getEtape().stream()
-                                        .filter(etape -> Statut.EN_COURS.equals(etape.getStatut()))
+                                        .filter(etape -> Statut.En_Cours.equals(etape.getStatut()))
                                         .findFirst() // Prend la première étape en cours, s'il y en a
                                         .orElse(null),
                                 activite.getEntite(),
@@ -179,19 +179,19 @@ public class ActiviteController {
 
     @GetMapping("/nombreActivitesEncours")
     public ResponseEntity<Long> getNombreActivitesEncours() {
-        long count = activiteRepository.countActivitesByStatut(Statut.EN_COURS); // Compte les activités avec statut "En_Cours"
+        long count = activiteRepository.countActivitesByStatut(Statut.En_Cours); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
     }
 
     @GetMapping("/nombreActivitesEnAttente")
     public ResponseEntity<Long> getNombreActivitesEnAttente() {
-        long count = activiteRepository.countActivitesByStatut(Statut.EN_ATTENTE); // Compte les activités avec statut "En_Cours"
+        long count = activiteRepository.countActivitesByStatut(Statut.En_Attente); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
     }
 
     @GetMapping("/nombreActivitesTerminer")
     public ResponseEntity<Long> getNombreActivitesTerminer() {
-        long count = activiteRepository.countActivitesByStatut(Statut.TERMINE); // Compte les activités avec statut "En_Cours"
+        long count = activiteRepository.countActivitesByStatut(Statut.Termine); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
     }
 }

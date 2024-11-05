@@ -1,9 +1,9 @@
 package com.odk.Enum;
 
 public enum Statut {
-    EN_COURS("En_Cours"),
-    EN_ATTENTE("En_Attente"),
-    TERMINE("Termine")
+    En_Cours("En_Cours"),
+    En_Attente("En_Attente"),
+    Termine("Termine")
     ;
 
     private final String value;

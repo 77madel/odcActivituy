@@ -81,30 +81,29 @@ public class Security {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return
                 httpSecurity
-                .cors() // Active CORS
-                .and()
-                .csrf(AbstractHttpConfigurer::disable)
+                        .cors().and()
+                        .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorize ->
                                 authorize
                                         .requestMatchers("/auth/**").permitAll()  // Autoriser les routes d'authentification
-                                        .requestMatchers("/participant/**").authenticated()  // Autoriser les routes d'authentification
-                                        .requestMatchers("/personnel/**").authenticated()  // Autoriser les routes d'authentification
-                                        .requestMatchers("/api/import/**").authenticated()  // Autoriser les routes d'authentification
-                                        .requestMatchers("/etape/{id}/participants/upload").authenticated()
-                                        .requestMatchers("/etape/**").authenticated()
-                                        .requestMatchers("/activite/**").authenticated()
-                                        .requestMatchers("/activite/enCours").authenticated()
-                                        .requestMatchers("/vigile/**").authenticated()
-                                        .requestMatchers("/critere/**").authenticated()
-                                        .requestMatchers("/entite/**").hasRole("Personnel")
-                                        .requestMatchers("/images/**").authenticated()
-                                        .requestMatchers("/typeActivite/**").authenticated()
-                                        .requestMatchers("/utilisateur/**").authenticated()
-                                        .requestMatchers("/utilisateur/change-password").authenticated()
-                                        .requestMatchers("/reporting/**").authenticated()
-                                        .requestMatchers("/role/**").authenticated()
-                                        .requestMatchers("/blacklist/**").authenticated()
+                                        .requestMatchers("/participant/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/personnel/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/api/import/**").permitAll()  // Autoriser les routes d'authentification
+                                        .requestMatchers("/etape/{id}/participants/upload").permitAll()
+                                        .requestMatchers("/etape/**").permitAll()
+                                        .requestMatchers("/activite/**").permitAll()
+                                        .requestMatchers("/activite/enCours").permitAll()
+                                        .requestMatchers("/vigile/**").permitAll()
+                                        .requestMatchers("/critere/**").permitAll()
+                                        .requestMatchers("/entite/**").permitAll()
+                                        .requestMatchers("/images/**").permitAll()
+                                        .requestMatchers("/typeActivite/**").permitAll()
+                                        .requestMatchers("/utilisateur/**").permitAll()
+                                        .requestMatchers("/utilisateur/change-password").permitAll()
+                                        .requestMatchers("/reporting/**").permitAll()
+                                        .requestMatchers("/role/**").permitAll()
+                                        .requestMatchers("/blacklist/**").permitAll()
                                         .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
