@@ -14,7 +14,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: rootpassword
     depends_on:
       - mysql-db
-  mysql-db:
+   mysql-db:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword

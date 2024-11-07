@@ -102,7 +102,7 @@ public class Security {
                                         .requestMatchers("/utilisateur/**").permitAll()
                                         .requestMatchers("/utilisateur/change-password").permitAll()
                                         .requestMatchers("/reporting/**").permitAll()
-                                        .requestMatchers("/role/**").permitAll()
+                                        .requestMatchers("/role/**").authenticated()
                                         .requestMatchers("/blacklist/**").permitAll()
                                         .anyRequest().authenticated()
                 )

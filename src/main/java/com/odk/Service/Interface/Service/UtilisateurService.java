@@ -10,6 +10,7 @@ import com.odk.dto.UtilisateurDTO;
 import com.odk.execption.IncorrectPasswordException;
 import com.odk.execption.UtilisateurNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
