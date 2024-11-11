@@ -33,6 +33,10 @@ public class Utilisateur implements UserDetails {
     private String password;
     private String genre;
 
+    public Utilisateur(Long id) {
+        this.id = id;
+    }
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

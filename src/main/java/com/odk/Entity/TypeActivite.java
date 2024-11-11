@@ -18,4 +18,7 @@ public class TypeActivite {
     private Long id;
     private String type;
 
+    public TypeActivite(Long id) {
+        this.id = id;
+    }
 }

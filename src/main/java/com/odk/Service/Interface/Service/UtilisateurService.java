@@ -60,13 +60,13 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
         utilisateur.setPassword(encodedPassword);
 
         // Vérifiez si le rôle est null avant d'accéder à ses propriétés
-        if (utilisateur.getRole() == null || utilisateur.getRole().getNom() == null) {
+        if (utilisateur.getRole() == null || utilisateur.getRole().getId() == null) {
             throw new RuntimeException("Le rôle ne peut pas être null");
         }
 
         // Rechercher le rôle par son nom
-        Role role = roleRepository.findByNom(utilisateur.getRole().getNom())
-                .orElseThrow(() -> new RuntimeException("Le rôle " + utilisateur.getRole().getNom() + " n'existe pas"));
+        Role role = roleRepository.findById(utilisateur.getRole().getId())
+                .orElseThrow(() -> new RuntimeException("Le rôle " + utilisateur.getRole().getId() + " n'existe pas"));
 
         utilisateur.setRole(role);
         Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);

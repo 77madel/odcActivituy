@@ -55,7 +55,7 @@ public class EntiteOdcController {
                 Utilisateur utilisateur = utilisateurOpt.get();
 
                 // Vérifier que l'utilisateur a le rôle de "Personnel"
-                if (utilisateur.getRole().getNom().equals("Personnel")) {
+                if (utilisateur.getRole().getNom().equals("PERSONNEL")) {
                     entite.setResponsable(utilisateur);
                 } else {
                     throw new RuntimeException("Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
@@ -68,8 +68,10 @@ public class EntiteOdcController {
             Entite createdFormation = entiteOdcService.add(entite);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdFormation);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();  // Log de l'erreur JSON
             return ResponseEntity.badRequest().body(null);  // Erreur de conversion JSON
         } catch (Exception e) {
+            e.printStackTrace();  // Log de l'erreur générale
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Erreurs générales
         }
     }
