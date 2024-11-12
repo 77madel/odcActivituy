@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/activite")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ActiviteController {
 
     private final ActiviteRepository activiteRepository;

@@ -2,10 +2,7 @@ package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Etape;
 import com.odk.Entity.Participant;
-import com.odk.Repository.ActiviteParticipantRepository;
-import com.odk.Repository.ActiviteRepository;
-import com.odk.Repository.EtapeRepository;
-import com.odk.Repository.ParticipantRepository;
+import com.odk.Repository.*;
 import com.odk.Service.Interface.CrudService;
 import com.odk.dto.EtapeDTO;
 import com.odk.dto.EtapeMapper;
@@ -33,6 +30,7 @@ public class EtapeService implements CrudService<Etape, Long> {
     private ActiviteRepository activiteRepository;
     private ParticipantRepository participantRepository;
     private ActiviteParticipantRepository activiteParticipantRepository;
+    private CritereRepository critereRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(EtapeService.class);
 
@@ -89,12 +87,42 @@ public class EtapeService implements CrudService<Etape, Long> {
     }
     @Override
     public Etape update(Etape entity, Long id) {
-        Optional<Etape> etape = etapeRepository.findById(id);
-        if (etape.isPresent()) {
-          return   etapeRepository.save(entity);
-        }
-        return null;
+        return etapeRepository.findById(id).map(e -> {
+            // Si le nom n'est pas nul, mettre à jour
+            if (entity.getNom() != null) {
+                e.setNom(entity.getNom());
+            }
+
+            // Si le statut n'est pas nul, mettre à jour
+            if (entity.getStatut() != null) {
+                e.setStatut(entity.getStatut());
+            }
+
+            // Si l'activité est définie, la mettre à jour (vérifier si elle existe)
+            if (entity.getActivite() != null) {
+                if (activiteRepository.existsById(entity.getActivite().getId())) {
+                    e.setActivite(entity.getActivite());
+                } else {
+                    throw new RuntimeException("Activité non trouvée");
+                }
+            }
+
+            // Si le critère est défini, le mettre à jour (vérifier s'il existe)
+            if (entity.getCritere() != null) {
+                if (critereRepository.existsById(entity.getCritere().getId())) {
+                    e.setCritere(entity.getCritere());
+                } else {
+                    throw new RuntimeException("Critère non trouvé");
+                }
+            }
+
+            // Sauvegarder l'entité mise à jour
+            return etapeRepository.save(e);
+        }).orElseThrow(() -> new RuntimeException("L'id n'est pas disponible"));
     }
+
+
+
 
     @Override
     public void delete(Long id) {

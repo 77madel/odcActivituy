@@ -35,7 +35,7 @@ public class Activite {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private int objectifParticipation;
+    private Integer objectifParticipation;
 
     /*@ManyToOne(cascade = CascadeType.DETACH)
     @JoinColumn(name = "etape_id")
@@ -55,21 +55,10 @@ public class Activite {
     @JsonManagedReference
     private List<Etape> etape = new ArrayList<>();
 
-    /*@ManyToMany
-    @JoinTable(
-            name = "ActiviteParticipant",
-            joinColumns = @JoinColumn(name = "activite_id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id")
-    )
-    private Set<Participant> participants;
-*/
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Activite(Long id) {
         this.id = id;
     }
 
-   /* @OneToMany(mappedBy = "activite")
-    @JsonManagedReference
-    private List<ActiviteParticipant> participants;*/
 
 }

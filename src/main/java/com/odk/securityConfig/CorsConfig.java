@@ -8,13 +8,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Autorise toutes les requêtes
-                .allowedOriginPatterns("*") // Permet toutes les origines
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Méthodes autorisées
-                .allowedHeaders("*") // Autorise tous les en-têtes
-                .allowCredentials(true) // Autorise l'envoi des cookies
-                .maxAge(3600); // Durée de validité de la demande CORS (en secondes)
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Ajoutez PATCH ici
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
+
 }
 
 

@@ -26,8 +26,4 @@ public class Role {
         this.id = id;
     }
 
-
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "role")
-//    private List<Utilisateur> utilisateurs;
 }

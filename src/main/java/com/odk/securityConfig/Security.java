@@ -20,9 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -97,9 +94,9 @@ public class Security {
                                         .requestMatchers("/activite/**").hasRole("PERSONNEL")
                                         .requestMatchers("/activite/enCours").authenticated()
                                         .requestMatchers("/critere/**").hasRole("PERSONNEL")
-                                        .requestMatchers(POST,"/entite/**").hasRole("SUPERADMIN")
-                                        .requestMatchers(GET,"/entite/**").hasAnyRole("SUPERADMIN", "PERSONNEL")
-                                         .requestMatchers("/images/**").permitAll()
+                                        .requestMatchers(HttpMethod.POST,"/entite/**").hasRole("SUPERADMIN")
+                                        .requestMatchers(HttpMethod.GET,"/entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
+                                        .requestMatchers("/images/**").permitAll()
                                         .requestMatchers("/typeActivite/**").hasRole("PERSONNEL")
                                         .requestMatchers("/utilisateur/**").permitAll()
                                         .requestMatchers("/utilisateur/change-password").authenticated()

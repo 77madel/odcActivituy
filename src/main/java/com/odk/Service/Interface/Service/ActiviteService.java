@@ -5,6 +5,8 @@ import com.odk.Entity.Utilisateur;
 import com.odk.Enum.Statut;
 import com.odk.Repository.ActiviteRepository;
 import com.odk.Service.Interface.CrudService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -78,14 +80,44 @@ public class ActiviteService implements CrudService<Activite, Long> {
         return activiteRepository.findById(id);
     }
 
+    @Transactional
     @Override
     public Activite update(Activite activite, Long id) {
-        Optional<Activite> activiteOptional = activiteRepository.findById(id);
-        if (activiteOptional.isPresent()) {
-          return  activiteRepository.save(activite);
-        }
-        return null;
+        return activiteRepository.findById(id).map(a -> {
+            if (activite.getNom() != null) {
+                a.setNom(activite.getNom());
+            }
+            if (activite.getTitre() != null) {
+                a.setTitre(activite.getTitre());
+            }
+            if (activite.getDescription() != null) {
+                a.setDescription(activite.getDescription());
+            }
+            if (activite.getDateDebut() != null) {
+                a.setDateDebut(activite.getDateDebut());
+            }
+            if (activite.getLieu() != null) {
+                a.setLieu(activite.getLieu());
+            }
+            if (activite.getObjectifParticipation() != null) {
+                a.setObjectifParticipation(activite.getObjectifParticipation());
+            }
+            if (activite.getEntite() != null) {
+                a.setEntite(activite.getEntite());
+            }
+            if (activite.getTypeActivite() != null) {
+                a.setTypeActivite(activite.getTypeActivite());
+            }
+            if (activite.getEtape() != null) {
+                a.getEtape().clear();
+                a.getEtape().addAll(activite.getEtape());
+            }
+
+            return activiteRepository.save(a);
+        }).orElseThrow(() -> new RuntimeException("Votre id n'existe pas"));
     }
+
+
 
     @Override
     public void delete(Long id) {
