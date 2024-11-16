@@ -51,7 +51,7 @@ public class Activite {
     @JoinColumn(name = "typeActivite_id")
     @JsonIgnore
     private TypeActivite typeActivite;
-    @OneToMany(mappedBy = "activite", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "activite", cascade = CascadeType.DETACH, orphanRemoval = true)
     @JsonManagedReference
     private List<Etape> etape = new ArrayList<>();
 
