@@ -63,6 +63,7 @@ public class EtapeService implements CrudService<Etape, Long> {
 
     @Override
     public Etape add(Etape etape) {
+        etape.mettreAJourStatut(); // Mise à jour du statut avant sauvegarde
         return etapeRepository.save(etape);
     }
 
@@ -115,6 +116,9 @@ public class EtapeService implements CrudService<Etape, Long> {
                     throw new RuntimeException("Critère non trouvé");
                 }
             }
+
+            // Mise à jour du statut dynamiquement
+            e.mettreAJourStatut();
 
             // Sauvegarder l'entité mise à jour
             return etapeRepository.save(e);

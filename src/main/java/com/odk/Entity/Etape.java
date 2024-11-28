@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,8 @@ public class Etape {
     @OneToMany(mappedBy = "etapeResultat", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("etapeResultatRef")
     private List<Participant> listeResultat = new ArrayList<>();
+    private Date dateDebut;
+    private Date dateFin;
 
     private Statut statut;
 
@@ -61,6 +64,21 @@ public class Etape {
         this.id = id;
     }
 
+    public void mettreAJourStatut() {
+        Date maintenant = new Date();
+        if (dateDebut != null && dateFin != null) {
+            if (maintenant.before(dateDebut)) {
+                this.statut = Statut.En_Attente;
+            } else if (maintenant.after(dateFin)) {
+                this.statut = Statut.Termine;
+            } else {
+                this.statut = Statut.En_Cours;
+            }
+            System.out.println("Statut mis à jour : " + this.statut);
+        } else {
+            throw new RuntimeException("Les dates de début et de fin doivent être définies pour gérer le statut.");
+        }
+    }
 
 
 }

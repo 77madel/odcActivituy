@@ -25,14 +25,27 @@ public class EtapeController {
     private EtapeRepository etapeRepository;
 
 
+//    @PostMapping("/ajout")
+//    @ResponseStatus(HttpStatus.CREATED)
+////    public ResponseEntity<List<Etape>> addEtapes(@RequestBody List<Etape> etapes) {
+////        List<Etape> savedEtapes = etapes.stream()
+////                .map(etapeRepository::save)
+////                .collect(Collectors.toList());
+////        return ResponseEntity.ok(savedEtapes);
+////    }
+///
     @PostMapping("/ajout")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<List<Etape>> addEtapes(@RequestBody List<Etape> etapes) {
         List<Etape> savedEtapes = etapes.stream()
-                .map(etapeRepository::save)
+                .map(etape -> {
+                    etape.mettreAJourStatut(); // Mise à jour du statut avant sauvegarde
+                    return etapeRepository.save(etape);
+                })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(savedEtapes);
     }
+
 
     @GetMapping("/liste")
     @ResponseStatus(HttpStatus.OK)

@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.GET;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -91,18 +93,23 @@ public class Security {
                                         .requestMatchers("/participant/**").hasAnyRole("PERSONNEL", "SUPERADMIN")  // Autoriser les routes d'authentification
                                         .requestMatchers("/etape/{id}/participants/upload").hasRole("PERSONNEL")
                                         .requestMatchers("/etape/**").hasRole("PERSONNEL")
+                                        .requestMatchers(GET,"/etape/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         .requestMatchers("/activite/**").hasRole("PERSONNEL")
-                                        .requestMatchers("/activite/enCours").authenticated()
+                                        .requestMatchers(GET,"/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+                                        .requestMatchers("/activite/enCours").hasRole("SUPERADMIN")
                                         .requestMatchers("/critere/**").hasRole("PERSONNEL")
+                                        .requestMatchers(GET,"/critere/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         .requestMatchers(HttpMethod.POST,"/entite/**").hasRole("SUPERADMIN")
-                                        .requestMatchers(HttpMethod.GET,"/entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
+                                        .requestMatchers(GET,"/entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
                                         .requestMatchers("/images/**").permitAll()
                                         .requestMatchers("/typeActivite/**").hasRole("PERSONNEL")
-                                        .requestMatchers("/utilisateur/**").permitAll()
+                                        .requestMatchers(GET,"/typeActivite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
+                                        .requestMatchers("/utilisateur/**").hasRole("SUPERADMIN")
                                         .requestMatchers("/utilisateur/change-password").authenticated()
                                         .requestMatchers("/reporting/**").authenticated()
                                         .requestMatchers("/role/**").hasRole("SUPERADMIN")
                                         .requestMatchers("/blacklist/**").hasRole("PERSONNEL")
+                                        .requestMatchers(GET,"/blacklist/**").hasAnyRole("SUPERADMIN","PERSONNEL")
                                         .anyRequest().authenticated()
                 )
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->
