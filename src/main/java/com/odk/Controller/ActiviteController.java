@@ -74,6 +74,7 @@ public class ActiviteController {
                             activite.getTitre(),
                             activite.getDateDebut(),
                             activite.getDateFin(),
+                            activite.getStatut(),
                             activite.getLieu(),
                             activite.getDescription(),
                             activite.getObjectifParticipation(),
@@ -108,11 +109,12 @@ public class ActiviteController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void supprimer(@PathVariable Long id) {
+    public ResponseEntity<?> supprimerActivite(@PathVariable Long id) {
         try {
-
             activiteService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResponseStatusException e) {
+            throw e; // Laissez passer l'exception si elle provient du service
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la suppression de l'activité", e);
         }
@@ -152,6 +154,7 @@ public class ActiviteController {
                                 activite.getTitre(),
                                 activite.getDateDebut(),
                                 activite.getDateFin(),
+                                activite.getStatut(),
                                 activite.getLieu(),
                                 activite.getDescription(),
                                 activite.getObjectifParticipation(),

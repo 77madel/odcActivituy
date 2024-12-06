@@ -16,6 +16,7 @@ public class ActiviteDTO {
     private String titre;
     private Date dateDebut;
     private Date dateFin;
+    private Statut statut;
     private String lieu;
     private String description;
     private int objectifParticipation;
@@ -26,12 +27,13 @@ public class ActiviteDTO {
     private List<ParticipantDTO> listeResultat; // Liste de participants pour l'étape de résultat
 
     // Constructeur
-    public ActiviteDTO(Long id, String nom, String titre, Date dateDebut, Date dateFin, String lieu, String description, int objectifParticipation, Etape etape, Entite entite, TypeActivite typeActivite, List<ParticipantDTO> listeDebut, List<ParticipantDTO> listeResultat) {
+    public ActiviteDTO(Long id, String nom, String titre, Date dateDebut, Date dateFin, Statut statut, String lieu, String description, int objectifParticipation, Etape etape, Entite entite, TypeActivite typeActivite, List<ParticipantDTO> listeDebut, List<ParticipantDTO> listeResultat) {
         this.id = id;
         this.nom = nom;
         this.titre = titre;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
+        this.statut = statut;
         this.lieu = lieu;
         this.description = description;
         this.objectifParticipation = objectifParticipation;
