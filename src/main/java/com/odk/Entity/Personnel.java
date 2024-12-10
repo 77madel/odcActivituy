@@ -15,7 +15,7 @@ public class Personnel extends Utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "entite_id")
-    private Entite entite;
+//    @ManyToOne(cascade = CascadeType.DETACH)
+//    @JoinColumn(name = "entite_id")
+//    private Entite entite;
 }

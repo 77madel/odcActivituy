@@ -1,5 +1,6 @@
 package com.odk.Service.Interface.Service;
 
+import com.odk.Entity.Critere;
 import com.odk.Entity.Etape;
 import com.odk.Entity.Participant;
 import com.odk.Repository.*;
@@ -109,13 +110,16 @@ public class EtapeService implements CrudService<Etape, Long> {
             }
 
             // Si le critère est défini, le mettre à jour (vérifier s'il existe)
-            if (entity.getCritere() != null) {
-                if (critereRepository.existsById(entity.getCritere().getId())) {
-                    e.setCritere(entity.getCritere());
-                } else {
-                    throw new RuntimeException("Critère non trouvé");
+            if (entity.getCritere() != null && !entity.getCritere().isEmpty()) {
+                for (Critere critere : entity.getCritere()) {
+                    if (critereRepository.existsById(critere.getId())) {
+                        e.getCritere().add(critere); // Ajoute le critère à l'entité cible
+                    } else {
+                        throw new RuntimeException("Critère non trouvé : ID " + critere.getId());
+                    }
                 }
             }
+
 
             // Mise à jour du statut dynamiquement
             e.mettreAJourStatut();

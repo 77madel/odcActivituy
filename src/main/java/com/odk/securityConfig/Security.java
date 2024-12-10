@@ -94,7 +94,7 @@ public class Security {
                                         .requestMatchers("/etape/{id}/participants/upload").hasRole("PERSONNEL")
                                         .requestMatchers("/etape/**").hasRole("PERSONNEL")
                                         .requestMatchers(GET,"/etape/**").hasAnyRole("PERSONNEL","SUPERADMIN")
-                                        .requestMatchers("/activite/**").hasRole("PERSONNEL")
+                                        .requestMatchers("/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         .requestMatchers(GET,"/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         .requestMatchers("/activite/enCours").hasRole("SUPERADMIN")
                                         .requestMatchers("/critere/**").hasRole("PERSONNEL")

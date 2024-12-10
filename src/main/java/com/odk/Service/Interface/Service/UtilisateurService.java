@@ -1,5 +1,6 @@
 package com.odk.Service.Interface.Service;
 
+import com.odk.Entity.Entite;
 import com.odk.Entity.Role;
 import com.odk.Entity.Utilisateur;
 import com.odk.Repository.RoleRepository;
@@ -104,7 +105,7 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
                 utilisateur.getPhone(),
                 utilisateur.getGenre(),
                 utilisateur.getRole(),
-                utilisateur.getEntite()
+                (Entite) utilisateur.getEntite()
         );
     }
 

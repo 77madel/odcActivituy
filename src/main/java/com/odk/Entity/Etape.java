@@ -54,10 +54,16 @@ public class Etape {
     }
 
 
-
-    @ManyToOne(cascade = CascadeType.DETACH)
-    @JoinColumn(name = "critere_id")
-    private Critere critere;
+//
+//    @ManyToOne(cascade = CascadeType.DETACH)
+//    @JoinColumn(name = "critere_id")
+    @ManyToMany
+    @JoinTable(
+        name = "etape_critere",
+        joinColumns = @JoinColumn(name = "etape_id"),
+        inverseJoinColumns = @JoinColumn(name = "critere_id")
+    )
+    private List<Critere> critere;
 
     // Ajoutez un constructeur prenant un ID
     public Etape(Long id) {

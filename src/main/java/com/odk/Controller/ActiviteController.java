@@ -183,19 +183,19 @@ public class ActiviteController {
 
     @GetMapping("/nombreActivitesEncours")
     public ResponseEntity<Long> getNombreActivitesEncours() {
-        long count = activiteRepository.countActivitesByStatut(Statut.En_Cours); // Compte les activités avec statut "En_Cours"
+        long count = activiteRepository.countByStatut(Statut.En_Cours); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
     }
 
     @GetMapping("/nombreActivitesEnAttente")
     public ResponseEntity<Long> getNombreActivitesEnAttente() {
-        long count = activiteRepository.countActivitesByStatut(Statut.En_Attente); // Compte les activités avec statut "En_Cours"
+        long count = activiteRepository.countByStatut(Statut.En_Attente); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
     }
 
     @GetMapping("/nombreActivitesTerminer")
     public ResponseEntity<Long> getNombreActivitesTerminer() {
-        long count = activiteRepository.countActivitesByStatut(Statut.Termine); // Compte les activités avec statut "En_Cours"
+        long count = activiteRepository.countByStatut(Statut.Termine); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
     }
 }
