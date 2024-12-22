@@ -3,6 +3,7 @@ package com.odk.Auth;
 import com.odk.Entity.Role;
 import com.odk.Entity.Utilisateur;
 import com.odk.Repository.UtilisateurRepository;
+import com.odk.Service.Interface.Service.EmailService;
 import com.odk.Service.Interface.Service.UtilisateurService;
 import com.odk.dto.AuthentificationDTO;
 import com.odk.securityConfig.JwtService;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -40,37 +42,10 @@ public class Login {
     private UtilisateurRepository utilisateurRepository;
     private UtilisateurService utilisateurService;
     private JwtService jwtService;
+    private EmailService emailService;
     //private JwtEncoder jwtEncoder;
 
     @PostMapping("/login")
-    /*public ResponseEntity<AuthentificationDTO> login(@RequestBody AuthentificationDTO authentificationDTO) {
-        // Authentifier l'utilisateur
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authentificationDTO.getUsername(), authentificationDTO.getPassword())
-        );
-
-        // Si l'authentification réussit, définir l'utilisateur dans le contexte de sécurité
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Récupérer l'utilisateur à partir de son email
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(authentificationDTO.getUsername())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec cet email."));
-
-        // Générer un token JWT
-        String jwtToken = jwtAuthFilter.(authentication, utilisateur, jwtEncoder);
-        System.out.println("Token généré : " + jwtToken); // Debug: afficher le token
-
-        // Construire l'objet de réponse
-        AuthentificationDTO authentificationDTO1 = new AuthentificationDTO();
-        authentificationDTO1.setUsername(utilisateur.getEmail()); // Utiliser l'email de l'utilisateur
-        authentificationDTO1.setToken(jwtToken); // Retourner le token JWT
-        authentificationDTO1.setRole(utilisateur.getRole()); // Ajouter le rôle de l'utilisateur
-        authentificationDTO1.setNom(utilisateur.getNom()); // Ajouter le nom de l'utilisateur
-        authentificationDTO1.setPrenom(utilisateur.getPrenom()); // Ajouter le prénom de l'utilisateur
-
-        return new ResponseEntity<>(authentificationDTO1, HttpStatus.OK);
-    }*/
-
     public ResponseEntity<?> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
         if (authentificationDTO.getUsername() == null || authentificationDTO.getPassword() == null) {
             return ResponseEntity.badRequest().body("Nom d'utilisateur et mot de passe requis"); // Réponse 400
@@ -94,10 +69,46 @@ public class Login {
         }
     }
 
+    @PostMapping("/request-password-reset")
+    public ResponseEntity<String> requestPasswordReset(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(email);
 
+        if (utilisateurOpt.isPresent()) {
+            Utilisateur utilisateur = utilisateurOpt.get();
+            String token = jwtService.generateResetPasswordToken(utilisateur.getEmail()).get("token"); // Corrigé ici
 
+            // Envoyer le mail avec instructions
+            String resetPasswordUrl = "http://localhost:4200/set-new-password?token=" + token;
+            emailService.sendSimpleEmail(email, "Réinitialisation de votre mot de passe",
+                    String.format("Bonjour %s, cliquez sur ce lien pour réinitialiser votre mot de passe : %s", utilisateur.getNom(), resetPasswordUrl));
+            return ResponseEntity.ok("{\"message\": \"Un email vous a été envoyé avec les instructions.\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur introuvable");
+        }
+    }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> resetRequest) {
+        String token = resetRequest.get("token");
+        String newPassword = resetRequest.get("newPassword");
 
+        // Décoder le token pour obtenir l'email
+        String email = jwtService.getEmailFromToken(token);
+
+        Optional<Utilisateur> utilisateurOpt = utilisateurRepository.findByEmail(email);
+        if (utilisateurOpt.isPresent()) {
+            Utilisateur utilisateur = utilisateurOpt.get();
+
+            // Mettre à jour le mot de passe
+            utilisateur.setPassword(passwordEncoder.encode(newPassword));
+            utilisateurRepository.save(utilisateur);
+
+            return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Mot de passe mis à jour avec succès").toString());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur introuvable ou token invalide");
+        }
+    }
 
     // 3. Déconnexion - Invalider le token JWT si utilisé
     @PostMapping("/logout")

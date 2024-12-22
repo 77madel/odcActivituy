@@ -109,15 +109,18 @@ public class ActiviteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> supprimerActivite(@PathVariable Long id) {
-        try {
-            activiteService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (ResponseStatusException e) {
-            throw e; // Laissez passer l'exception si elle provient du service
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la suppression de l'activité", e);
-        }
+//    public ResponseEntity<?> supprimerActivite(@PathVariable Long id) {
+//        try {
+//            activiteService.delete(id);
+//            return ResponseEntity.noContent().build();
+//        } catch (ResponseStatusException e) {
+//            throw e; // Laissez passer l'exception si elle provient du service
+//        } catch (Exception e) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la suppression de l'activité", e);
+//        }
+//    }
+    public void deleteActivite(@PathVariable Long id) {
+        activiteService.delete(id);
     }
 
 

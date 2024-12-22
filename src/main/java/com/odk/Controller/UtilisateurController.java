@@ -70,9 +70,25 @@ public class UtilisateurController {
         return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs
     }
 
-   @PostMapping("/change-password")
-   public void modifierMotDePasse(@RequestBody Map<String, String> activation) {
-       this.utilisateurService.modifierMotDePasse(activation);
-   }
+//   @PostMapping("/change-password")
+//   public void modifierMotDePasse(@RequestBody Map<String, String> activation) {
+//       this.utilisateurService.modifierMotDePasse(activation);
+//   }
+
+    @PutMapping("/modifierMotDePasse")
+    public ResponseEntity<String> modifierMotDePasse(@RequestBody Map<String, String> parametres) {
+        try {
+            // Assurez-vous que les clés correspondent avec celles envoyées du frontend
+            String ancienMotDePasse = parametres.get("currentPassword");
+            String nouveauMotDePasse = parametres.get("newPassword");
+
+            // Appel à la méthode de modification de mot de passe
+            utilisateurService.modifierMotDePasse(Map.of("ancienPassword", ancienMotDePasse, "newPassword", nouveauMotDePasse));
+
+            return ResponseEntity.ok("Mot de passe modifié avec succès.");
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
 }

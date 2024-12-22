@@ -27,6 +27,7 @@ public class Entite {
 
     @OneToOne
     @JoinColumn(name = "responsable_id", referencedColumnName = "id")
+    @JsonIgnore
     private Utilisateur responsable;
 
     // Ajout d'un constructeur prenant un ID pour la désérialisation

@@ -43,6 +43,7 @@ public class Utilisateur implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "entite_id")
+    @JsonIgnore
     private Entite entite;
 
     @Transient

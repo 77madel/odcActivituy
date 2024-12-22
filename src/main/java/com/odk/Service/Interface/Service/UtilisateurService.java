@@ -122,6 +122,7 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
                     p.setEmail(utilisateur.getEmail());
                     p.setPrenom(utilisateur.getPrenom());
                     p.setPhone(utilisateur.getPhone());
+                    p.setGenre(utilisateur.getGenre());
 
                     // Vérifiez si le rôle est null avant de le définir
                     if (utilisateur.getRole() != null) {
