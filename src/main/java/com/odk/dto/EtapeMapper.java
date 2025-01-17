@@ -29,6 +29,7 @@ public interface EtapeMapper {
     }
 
 
+    // Mapper une liste d'entités Etape vers une liste de DTO
     List<EtapeDTO> listeEtape(List<Etape> etape);
 
     // Convert MissionDTO to entity

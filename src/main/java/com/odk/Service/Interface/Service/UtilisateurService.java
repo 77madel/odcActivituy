@@ -72,15 +72,56 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
         utilisateur.setRole(role);
         Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
 
-        // Envoyer un email avec le mot de passe et les informations du personnel
-        String sujet = "Bienvenue dans notre équipe";
-        String message = "Bonjour " + utilisateur.getNom() + ",\n\n"
-                + "Votre compte a été créé avec succès. Voici vos informations de connexion :\n"
-                + "Email : " + utilisateur.getEmail() + "\n"
-                + "Mot de passe : " + rawPassword + "\n\n"
-                + "Veuillez changer votre mot de passe après votre première connexion.\n\n"
-                + "Cordialement,\n ODC.";
-        emailService.sendSimpleEmail(utilisateur.getEmail(), sujet, message);
+//        // Envoyer un email avec le mot de passe et les informations du personnel
+//        String sujet = "Bienvenue dans notre équipe";
+//        String message = "Bonjour " + utilisateur.getNom() + ",\n\n"
+//                + "Votre compte a été créé avec succès. Voici vos informations de connexion :\n"
+//                + "Email : " + utilisateur.getEmail() + "\n"
+//                + "Mot de passe : " + rawPassword + "\n\n"
+//                + "Veuillez changer votre mot de passe après votre première connexion.\n\n"
+//                + "Cordialement,\n ODC.";
+//        emailService.sendSimpleEmail(utilisateur.getEmail(), sujet, message);
+
+        // Construire le corps de l'email avec HTML pour une meilleure présentation
+        StringBuilder emailBodyBuilder = new StringBuilder();
+        emailBodyBuilder.append("<!DOCTYPE html>");
+        emailBodyBuilder.append("<html lang=\"fr\">");
+        emailBodyBuilder.append("<head>");
+        emailBodyBuilder.append("<meta charset=\"UTF-8\">");
+        emailBodyBuilder.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+        emailBodyBuilder.append("<title>Confirmation de Création de Compte</title>");
+        emailBodyBuilder.append("<style>");
+        emailBodyBuilder.append("  body { font-family: Arial, sans-serif; background-color: #f39c12; margin: 0; padding: 20px; }");
+        emailBodyBuilder.append("  .container { background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        emailBodyBuilder.append("  .header { text-align: center; padding-bottom: 20px; }");
+        emailBodyBuilder.append("  .content { line-height: 1.6; }");
+        emailBodyBuilder.append("  .footer { margin-top: 20px; font-size: 0.9em; color: #555555; text-align: center; }");
+        emailBodyBuilder.append("</style>");
+        emailBodyBuilder.append("</head>");
+        emailBodyBuilder.append("<body>");
+        emailBodyBuilder.append("<div class=\"container\">");
+        emailBodyBuilder.append("<div class=\"header\">");
+        emailBodyBuilder.append("<h2>Bienvenue chez Orange Digital Center</h2>");
+        emailBodyBuilder.append("</div>");
+        emailBodyBuilder.append("<div class=\"content\">");
+        emailBodyBuilder.append("<p>Bonjour ").append(utilisateur.getPrenom()).append(" ").append(utilisateur.getNom()).append(",</p>");
+        emailBodyBuilder.append("<p>Nous sommes ravis de vous compter parmi nous. Votre compte a été créé avec succès.</p>");
+        emailBodyBuilder.append("<p><strong>Nom d'utilisateur :</strong> ").append(utilisateur.getEmail()).append("</p>");
+        emailBodyBuilder.append("<p><strong>Mot de Passe :</strong> ").append(rawPassword).append("</p>");
+        emailBodyBuilder.append("<p>Pour commencer, veuillez vous connecter à votre compte en utilisant vos identifiants.</p>");
+        emailBodyBuilder.append("<p>Si vous avez des questions, n'hésitez pas à contacter notre support.</p>");
+        emailBodyBuilder.append("</div>");
+        emailBodyBuilder.append("<div class=\"footer\">");
+        emailBodyBuilder.append("<p>L'équipe <strong>ODC</strong></p>");
+        emailBodyBuilder.append("<p>Ceci est un email automatisé. Merci de ne pas y répondre.</p>");
+        emailBodyBuilder.append("</div>");
+        emailBodyBuilder.append("</div>");
+        emailBodyBuilder.append("</body>");
+        emailBodyBuilder.append("</html>");
+
+        String emailBody = emailBodyBuilder.toString();
+        emailService.sendSimpleEmail(utilisateur.getEmail(), "Confirmation de création de compte", emailBody);
+
 
         return savedUtilisateur;
     }

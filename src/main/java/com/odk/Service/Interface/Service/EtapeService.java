@@ -11,6 +11,7 @@ import com.odk.dto.ParticipantDTO;
 import com.odk.helper.ExcelHelper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,7 @@ public class EtapeService implements CrudService<Etape, Long> {
     private ParticipantRepository participantRepository;
     private ActiviteParticipantRepository activiteParticipantRepository;
     private CritereRepository critereRepository;
+
 
     private static final Logger logger = LoggerFactory.getLogger(EtapeService.class);
 

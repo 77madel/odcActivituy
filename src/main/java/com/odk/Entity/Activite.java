@@ -1,16 +1,12 @@
 package com.odk.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -54,9 +50,14 @@ public class Activite {
     @JoinColumn(name = "typeActivite_id")
     @JsonIgnore
     private TypeActivite typeActivite;
-    @OneToMany(mappedBy = "activite", cascade = CascadeType.DETACH, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Etape> etape = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "activite_etape",
+            joinColumns = @JoinColumn(name = "activite_id"),
+            inverseJoinColumns = @JoinColumn(name = "etape_id")
+    )
+    private List<Etape> etapes = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "created_by")

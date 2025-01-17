@@ -1,6 +1,7 @@
 package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Activite;
+import com.odk.Entity.Etape;
 import com.odk.Entity.Utilisateur;
 import com.odk.Enum.Statut;
 import com.odk.Repository.ActiviteRepository;
@@ -16,8 +17,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,14 +58,60 @@ public class ActiviteService implements CrudService<Activite, Long> {
                     .map(Utilisateur::getEmail) // Récupérer les emails
                     .collect(Collectors.toList());
 
-            // Préparer le sujet et le message
-            String sujet = "Nouvelle Activité Créée: " + activiteCree.getNom();
-            String message = "Une nouvelle activité a été créée: " + activiteCree.getNom();
+//            // Préparer le sujet et le message
+//            String sujet = "Nouvelle Activité Créée: " + activiteCree.getNom();
+//            String message = "Une nouvelle activité a été créée: " + activiteCree.getNom();
+//
+//            // Envoyer un email à chaque utilisateur ayant le rôle "personnel"
+//            for (String email : emailsPersonnel) {
+//                emailService.sendSimpleEmail(email, sujet, message);
+//            }
 
-            // Envoyer un email à chaque utilisateur ayant le rôle "personnel"
+            // Construire le corps de l'email avec HTML pour une meilleure présentation
+            StringBuilder emailBodyBuilder = new StringBuilder();
+            emailBodyBuilder.append("<!DOCTYPE html>");
+            emailBodyBuilder.append("<html lang=\"fr\">");
+            emailBodyBuilder.append("<head>");
+            emailBodyBuilder.append("<meta charset=\"UTF-8\">");
+            emailBodyBuilder.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+            emailBodyBuilder.append("<title>Nouvelle Activité Créée</title>");
+            emailBodyBuilder.append("<style>");
+            emailBodyBuilder.append("  body { font-family: Arial, sans-serif; background-color: #f39c12; margin: 0; padding: 20px; }");
+            emailBodyBuilder.append("  .container { background-color: #ffffff; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+            emailBodyBuilder.append("  .header { text-align: center; padding-bottom: 20px; }");
+            emailBodyBuilder.append("  .content { line-height: 1.6; }");
+            emailBodyBuilder.append("  .footer { margin-top: 20px; font-size: 0.9em; color: #555555; text-align: center; }");
+            emailBodyBuilder.append("</style>");
+            emailBodyBuilder.append("</head>");
+            emailBodyBuilder.append("<body>");
+            emailBodyBuilder.append("<div class=\"container\">");
+            emailBodyBuilder.append("<div class=\"header\">");
+            emailBodyBuilder.append("<h2>Nouvelle Activité Créée</h2>");
+            emailBodyBuilder.append("</div>");
+            emailBodyBuilder.append("<div class=\"content\">");
+            emailBodyBuilder.append("<p>Bonjour,</p>");
+            emailBodyBuilder.append("<p>Une nouvelle activité a été créée dans notre système.</p>");
+            emailBodyBuilder.append("<p><strong>Nom de l'activité :</strong> ").append(activiteCree.getNom()).append("</p>");
+            emailBodyBuilder.append("<p><strong>Description :</strong> ").append(activiteCree.getDescription()).append("</p>");
+            emailBodyBuilder.append("<p><strong>Date :</strong> ").append(activiteCree.getDateDebut()).append("</p>");
+            emailBodyBuilder.append("<p>Nous vous invitons à consulter cette activité pour plus de détails.</p>");
+            emailBodyBuilder.append("</div>");
+            emailBodyBuilder.append("<div class=\"footer\">");
+            emailBodyBuilder.append("<p>L'équipe <strong>ODC</strong></p>");
+            emailBodyBuilder.append("<p>Ceci est un email automatisé. Merci de ne pas y répondre.</p>");
+            emailBodyBuilder.append("</div>");
+            emailBodyBuilder.append("</div>");
+            emailBodyBuilder.append("</body>");
+            emailBodyBuilder.append("</html>");
+
+            String emailBody = emailBodyBuilder.toString();
+            String sujet = "Nouvelle Activité Créée: " + activiteCree.getNom();
+
+// Envoyer un email HTML à chaque utilisateur ayant le rôle "personnel"
             for (String email : emailsPersonnel) {
-                emailService.sendSimpleEmail(email, sujet, message);
+                emailService.sendSimpleEmail(email, sujet, emailBody);
             }
+
 
             return activiteCree;
         } catch (DataAccessException e) {
@@ -135,10 +184,13 @@ public class ActiviteService implements CrudService<Activite, Long> {
             if (activite.getTypeActivite() != null) {
                 a.setTypeActivite(activite.getTypeActivite());
             }
-            if (activite.getEtape() != null) {
-                a.getEtape().clear();
-                a.getEtape().addAll(activite.getEtape());
+            if (activite.getEtapes() != null) {
+                a.getEtapes().clear();
+                a.getEtapes().addAll(activite.getEtapes());
             }
+
+            // Mettre à jour les étapes
+            updateEtapes(a, activite.getEtapes());
 
             // Mettre à jour le statut
             a.mettreAJourStatut();
@@ -148,6 +200,11 @@ public class ActiviteService implements CrudService<Activite, Long> {
         }).orElseThrow(() -> new RuntimeException("L'activité avec l'ID spécifié n'existe pas."));
     }
 
+    private void updateEtapes(Activite activite, List<Etape> nouvellesEtapes) {
+        // Supprimer les étapes qui ne sont plus associées
+        // Ajouter les nouvelles étapes
+        activite.getEtapes().addAll(nouvellesEtapes);
+    }
 
 
     @Override

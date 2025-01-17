@@ -1,6 +1,7 @@
 package com.odk.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.odk.Entity.Critere;
 import com.odk.Enum.Statut;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ public class EtapeDTO {
     private Long id;
     private String nom;
     private Statut statut;
-    private List<Long> critere;
+    private List<Critere> critere;
     private List<ParticipantDTO> listeDebut;
     private List<ParticipantDTO> listeResultat;
 

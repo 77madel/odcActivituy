@@ -47,7 +47,7 @@ public class ActiviteController {
     public List<ActiviteDTO> listerActivite() {
         return activiteService.List().stream()
                 .map(activite -> {
-                    List<Etape> etapes = activite.getEtape();
+                    List<Etape> etapes = (List<Etape>) activite.getEtapes();
                     List<ParticipantDTO> listeDebutDTO = new ArrayList<>();
                     List<ParticipantDTO> listeResultatDTO = new ArrayList<>();
 
@@ -134,7 +134,7 @@ public class ActiviteController {
                     List<ParticipantDTO> listeResultatDTO = new ArrayList<>();
 
                     // Filtrer les étapes en cours et remplir les listes de participants uniquement si l'étape est en cours
-                    boolean hasEtapeEnCours = activite.getEtape().stream()
+                    boolean hasEtapeEnCours = activite.getEtapes().stream()
                             .filter(etape -> Statut.En_Cours.equals(etape.getStatut()))
                             .peek(etape -> {
                                 System.out.println("Étape valide en cours trouvée : " + etape.getNom());
@@ -161,7 +161,7 @@ public class ActiviteController {
                                 activite.getLieu(),
                                 activite.getDescription(),
                                 activite.getObjectifParticipation(),
-                                activite.getEtape().stream()
+                                activite.getEtapes().stream()
                                         .filter(etape -> Statut.En_Cours.equals(etape.getStatut()))
                                         .findFirst() // Prend la première étape en cours, s'il y en a
                                         .orElse(null),
