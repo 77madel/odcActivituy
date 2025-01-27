@@ -77,9 +77,9 @@ public class ParticipantController {
     public ResponseEntity<String> checkParticipant(@RequestParam String email, @RequestParam String phone) {
         boolean isBlacklisted = blackListService.isParticipantBlacklisted(email, phone);
         if (isBlacklisted) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Participant is blacklisted");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Participant est blacklister");
         }
-        return ResponseEntity.ok("Participant is not blacklisted");
+        return ResponseEntity.ok("Participant n'est pas blacklister");
     }
 
 }

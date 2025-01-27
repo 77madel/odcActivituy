@@ -12,6 +12,7 @@ import com.odk.execption.IncorrectPasswordException;
 import com.odk.execption.UtilisateurNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -44,12 +46,12 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
     @Override
     public Utilisateur add(Utilisateur utilisateur) {
         if (!UtilService.isValidEmail(utilisateur.getEmail())) {
-            throw new RuntimeException("Votre mail est invalide");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Votre mail est invalide");
         }
 
         Optional<Utilisateur> utilisateur1 = this.utilisateurRepository.findByEmail(utilisateur.getEmail());
         if (utilisateur1.isPresent()) {
-            throw new RuntimeException("Votre mail est déjà utilisé");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Votre mail est déjà utilisé");
         }
 
         // Définir un mot de passe par défaut si aucun mot de passe n'est fourni
@@ -62,12 +64,12 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
 
         // Vérifiez si le rôle est null avant d'accéder à ses propriétés
         if (utilisateur.getRole() == null || utilisateur.getRole().getId() == null) {
-            throw new RuntimeException("Le rôle ne peut pas être null");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Le rôle ne peut pas être null");
         }
 
         // Rechercher le rôle par son nom
         Role role = roleRepository.findById(utilisateur.getRole().getId())
-                .orElseThrow(() -> new RuntimeException("Le rôle " + utilisateur.getRole().getId() + " n'existe pas"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Le rôle " + utilisateur.getRole().getId() + " n'existe pas"));
 
         utilisateur.setRole(role);
         Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
@@ -180,7 +182,7 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
                     }
 
                     return utilisateurRepository.save(p);
-                }).orElseThrow(() -> new RuntimeException("Votre id n'existe pas"));
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Votre id n'existe pas"));
     }
 
     @Override
@@ -214,13 +216,13 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
                     utilisateur.setPassword(passwordEncoder.encode(nouveauMotDePasse));
                     utilisateurRepository.save(utilisateur);
                 } else {
-                    throw new IllegalArgumentException("Le nouveau mot de passe ne peut pas être le même que l'ancien.");
+                    throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Le nouveau mot de passe ne peut pas être le même que l'ancien.");
                 }
             } else {
-                throw new IllegalArgumentException("L'ancien mot de passe est incorrect.");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "L'ancien mot de passe est incorrect.");
             }
         } else {
-            throw new NoSuchElementException("Utilisateur avec cet email n'existe pas.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur avec cet email n'existe pas.");
         }
     }
 

@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,10 +59,10 @@ public class EntiteOdcController {
                 if (utilisateur.getRole().getNom().equals("PERSONNEL")) {
                     entite.setResponsable(utilisateur);
                 } else {
-                    throw new RuntimeException("Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
                 }
             } else {
-                throw new RuntimeException("Utilisateur non trouvé avec l'ID : " + utilisateurId);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé avec l'ID : " + utilisateurId);
             }
 
             // Ajouter l'entité
@@ -98,7 +99,7 @@ public class EntiteOdcController {
             // Use 'entiteId' from the path variable
             Optional<Entite> entiteOpt = entiteOdcService.findById(entiteId);
             if (!entiteOpt.isPresent()) {
-                throw new RuntimeException("Entité non trouvée avec l'ID : " + entiteId);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Entité non trouvée avec l'ID : " + entiteId);
             }
 
             Entite entite = entiteOpt.get();
@@ -120,10 +121,10 @@ public class EntiteOdcController {
                     if (utilisateur.getRole().getNom().equals("PERSONNEL")) {
                         entite.setResponsable(utilisateur);
                     } else {
-                        throw new RuntimeException("Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
                     }
                 } else {
-                    throw new RuntimeException("Utilisateur non trouvé avec l'ID : " + utilisateurId);
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé avec l'ID : " + utilisateurId);
                 }
             }
 

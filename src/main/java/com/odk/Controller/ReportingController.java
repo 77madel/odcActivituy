@@ -28,10 +28,14 @@ public class ReportingController {
         List<StatistiqueGenre> stats = reportingService.StatistiquesParGenre();
         return ResponseEntity.ok(stats);
     }*/
-
     @GetMapping("/participants-par-genre")
     public ResponseEntity<List<StatistiqueGenre>> StatistiquesParGenre() {
         List<StatistiqueGenre> stats = reportingService.StatistiquesParGenre();
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/participant")
+    public ResponseEntity<Map<String, Object>> getEtapeStatistics() {
+        return ResponseEntity.ok(reportingService.getParticipantStatistics());
     }
 }

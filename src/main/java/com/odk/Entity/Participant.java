@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @NoArgsConstructor
@@ -21,6 +22,7 @@ public class Participant{
     private String email;
     private String phone;
     private String genre;
+    private Date createdAt = new Date();
     private boolean checkedIn = false;  // Champ pour indiquer si le participant a été vérifié
     private LocalDateTime checkInTime;  // Champ pour l'heure de check-in
 

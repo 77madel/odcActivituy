@@ -12,6 +12,7 @@ import com.odk.helper.ExcelHelper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
@@ -107,7 +109,7 @@ public class EtapeService implements CrudService<Etape, Long> {
                 if (activiteRepository.existsById(entity.getActivite().getId())) {
                     e.setActivite(entity.getActivite());
                 } else {
-                    throw new RuntimeException("Activité non trouvée");
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Activité non trouvée");
                 }
             }
 
@@ -117,7 +119,7 @@ public class EtapeService implements CrudService<Etape, Long> {
                     if (critereRepository.existsById(critere.getId())) {
                         e.getCritere().add(critere); // Ajoute le critère à l'entité cible
                     } else {
-                        throw new RuntimeException("Critère non trouvé : ID " + critere.getId());
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Critère non trouvé : ID " + critere.getId());
                     }
                 }
             }
@@ -128,7 +130,7 @@ public class EtapeService implements CrudService<Etape, Long> {
 
             // Sauvegarder l'entité mise à jour
             return etapeRepository.save(e);
-        }).orElseThrow(() -> new RuntimeException("L'id n'est pas disponible"));
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'id n'est pas disponible"));
     }
 
 
@@ -150,7 +152,7 @@ public class EtapeService implements CrudService<Etape, Long> {
 
         // Récupérer l'étape par ID
         Etape etape = etapeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Étape non trouvée avec l'ID : " + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Étape non trouvée avec l'ID : " + id));
 
         // Ajouter les participants à la bonne liste (liste début ou liste résultat)
         if (toListeDebut) {

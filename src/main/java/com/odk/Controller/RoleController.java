@@ -23,7 +23,7 @@ public class RoleController {
         try {
             return roleService.add(role);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de l'ajout du role", e);
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Erreur lors de l'ajout du role", e);
         }
     }
 

@@ -4,7 +4,9 @@ import com.odk.Entity.BlackList;
 import com.odk.Repository.BlackListRepository;
 import com.odk.Service.Interface.CrudService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +41,7 @@ public class BlackListService implements CrudService<BlackList,Long> {
                     p.setPrenom(blackList.getPrenom());
                     p.setPhone(blackList.getPhone());
                     return blackListRepository.save(p);
-                }).orElseThrow(() -> new RuntimeException("Votre id n'existe pas"));
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Votre id n'existe pas"));
 
     }
 

@@ -37,7 +37,7 @@ public class ActiviteController {
         } catch (ResponseStatusException e) {
             throw e; // Laissez passer l'exception si elle provient de la méthode add
         } catch (Exception e) {
-            // Log de l'erreur
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de l'ajout de l'activité", e);
         }
     }
@@ -80,6 +80,7 @@ public class ActiviteController {
                             activite.getObjectifParticipation(),
                             etapes != null && !etapes.isEmpty() ? etapes.get(0) : null, // Prend la première étape
                             activite.getEntite(),
+                            activite.getSalleId(),
                             activite.getTypeActivite(),
                             listeDebutDTO,
                             listeResultatDTO
@@ -101,11 +102,7 @@ public class ActiviteController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Activite modifier(@PathVariable Long id, @RequestBody Activite activite) {
-        try {
             return activiteService.update(activite, id);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la modification de l'activité", e);
-        }
     }
 
     @DeleteMapping("/{id}")
@@ -166,6 +163,7 @@ public class ActiviteController {
                                         .findFirst() // Prend la première étape en cours, s'il y en a
                                         .orElse(null),
                                 activite.getEntite(),
+                                activite.getSalleId(),
                                 activite.getTypeActivite(),
                                 listeDebutDTO,
                                 listeResultatDTO

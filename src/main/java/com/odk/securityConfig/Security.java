@@ -91,10 +91,12 @@ public class Security {
                                 authorize
                                         .requestMatchers("/auth/**").permitAll()  // Autoriser les routes d'authentification
                                         .requestMatchers("/participant/**").hasAnyRole("PERSONNEL", "SUPERADMIN")  // Autoriser les routes d'authentification
+                                        .requestMatchers("/utilisateur/{id}").hasAnyRole("PERSONNEL","SUPERADMIN")  // Autoriser les routes d'authentification
                                         .requestMatchers("/etape/{id}/participants/upload").hasRole("PERSONNEL")
                                         .requestMatchers("/etape/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         //.requestMatchers(GET,"/etape/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         .requestMatchers("/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+                                        .requestMatchers("/salle/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         //.requestMatchers(GET,"/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         .requestMatchers("/activite/enCours").hasRole("SUPERADMIN")
                                         .requestMatchers("/critere/**").hasAnyRole("PERSONNEL","SUPERADMIN")
@@ -105,7 +107,7 @@ public class Security {
                                         .requestMatchers("/typeActivite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
                                         //.requestMatchers(GET,"/typeActivite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
                                         .requestMatchers("/utilisateur/**").hasRole("SUPERADMIN")
-                                        .requestMatchers("/utilisateur/change-password").authenticated()
+                                        .requestMatchers("/utilisateur/modifierMotDePasse").authenticated()
                                         .requestMatchers("/reporting/**").authenticated()
                                         .requestMatchers("/role/**").hasRole("SUPERADMIN")
                                         .requestMatchers("/blacklist/**").hasAnyRole("PERSONNEL","SUPERADMIN")

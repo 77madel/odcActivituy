@@ -4,7 +4,9 @@ import com.odk.Entity.TypeActivite;
 import com.odk.Repository.TypeActiviteRepository;
 import com.odk.Service.Interface.CrudService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +42,7 @@ public class TypeActiviteService implements CrudService<TypeActivite, Long> {
                 p -> {
                     p.setType(typeActivite.getType());
                     return typeActiviteRepository.save(p);
-                }).orElseThrow(()-> new RuntimeException("L'id n'existe pas"));
+                }).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'id n'existe pas"));
     }
 
     @Override

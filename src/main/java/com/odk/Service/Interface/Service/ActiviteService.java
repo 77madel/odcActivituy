@@ -39,10 +39,20 @@ public class ActiviteService implements CrudService<Activite, Long> {
             // Récupérer l'utilisateur connecté
             String email1 = SecurityContextHolder.getContext().getAuthentication().getName();
             Utilisateur utilisateurPerso = utilisateurRepository.findByEmail(email1)
-                    .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
 
             // Associer l'utilisateur comme créateur
             entity.setCreatedBy(utilisateurPerso);
+
+            List<Activite> conflits = activiteRepository.findConflictingActivites(
+                    entity.getSalleId().getId(),
+                    entity.getDateDebut(),
+                    entity.getDateFin()
+            );
+
+            if (!conflits.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "La salle est déjà réservée.");
+            }
 
             // Mettre à jour le statut de l'activité
             entity.mettreAJourStatut();
@@ -57,16 +67,6 @@ public class ActiviteService implements CrudService<Activite, Long> {
                     .filter(utilisateur -> utilisateur.getRole().getNom().equals("PERSONNEL")) // Vérifiez que le rôle est bien défini
                     .map(Utilisateur::getEmail) // Récupérer les emails
                     .collect(Collectors.toList());
-
-//            // Préparer le sujet et le message
-//            String sujet = "Nouvelle Activité Créée: " + activiteCree.getNom();
-//            String message = "Une nouvelle activité a été créée: " + activiteCree.getNom();
-//
-//            // Envoyer un email à chaque utilisateur ayant le rôle "personnel"
-//            for (String email : emailsPersonnel) {
-//                emailService.sendSimpleEmail(email, sujet, message);
-//            }
-
             // Construire le corps de l'email avec HTML pour une meilleure présentation
             StringBuilder emailBodyBuilder = new StringBuilder();
             emailBodyBuilder.append("<!DOCTYPE html>");
@@ -115,11 +115,13 @@ public class ActiviteService implements CrudService<Activite, Long> {
 
             return activiteCree;
         } catch (DataAccessException e) {
-            // Log de l'erreur
-            throw new RuntimeException("Erreur d'accès aux données lors de la création de l'activité", e);
+            e.printStackTrace(); // Pour afficher l'exception complète
+
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Erreur d'accès aux données lors de la création de l'activité", e);
         } catch (Exception e) {
-            // Log de l'erreur
-            throw new RuntimeException("Erreur lors de la création de l'activité", e);
+            e.printStackTrace(); // Pour afficher l'exception complète
+
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "La salle est déjà réservée.", e);
         }
     }
 
@@ -151,12 +153,12 @@ public class ActiviteService implements CrudService<Activite, Long> {
         // Récupérer l'utilisateur connecté
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
 
         return activiteRepository.findById(id).map(a -> {
             // Vérifier que l'utilisateur connecté est le créateur de l'activité
             if (!a.getCreatedBy().getEmail().equals(utilisateur.getEmail())) {
-                throw new RuntimeException("Vous n'êtes pas autorisé à modifier cette activité.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Vous n'êtes pas autorisé à modifier cette activité.");
             }
 
             // Mettre à jour les champs modifiables
@@ -184,6 +186,9 @@ public class ActiviteService implements CrudService<Activite, Long> {
             if (activite.getTypeActivite() != null) {
                 a.setTypeActivite(activite.getTypeActivite());
             }
+            if (activite.getSalleId() != null) {
+                a.setSalleId(activite.getSalleId());
+            }
             if (activite.getEtapes() != null) {
                 a.getEtapes().clear();
                 a.getEtapes().addAll(activite.getEtapes());
@@ -197,7 +202,7 @@ public class ActiviteService implements CrudService<Activite, Long> {
 
             // Sauvegarder les modifications
             return activiteRepository.save(a);
-        }).orElseThrow(() -> new RuntimeException("L'activité avec l'ID spécifié n'existe pas."));
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'activité avec l'ID spécifié n'existe pas."));
     }
 
     private void updateEtapes(Activite activite, List<Etape> nouvellesEtapes) {
@@ -212,11 +217,11 @@ public class ActiviteService implements CrudService<Activite, Long> {
         // Récupérer l'utilisateur connecté
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé"));
 
         // Récupérer l'activité
         Activite activite1 = activiteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Activité non trouvée"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Activité non trouvée"));
 
         // Vérifier si l'utilisateur est le créateur
         if (!activite1.getCreatedBy().getId().equals(utilisateur.getId())) {

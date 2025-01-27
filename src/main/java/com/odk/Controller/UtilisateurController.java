@@ -8,6 +8,7 @@ import com.odk.dto.UtilisateurDTO;
 import com.odk.execption.IncorrectPasswordException;
 import com.odk.execption.UtilisateurNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/utilisateur")
 @AllArgsConstructor
+@Slf4j
 public class UtilisateurController {
 
     private final UtilisateurRepository utilisateurRepository;
@@ -84,10 +86,12 @@ public class UtilisateurController {
 
             // Appel à la méthode de modification de mot de passe
             utilisateurService.modifierMotDePasse(Map.of("ancienPassword", ancienMotDePasse, "newPassword", nouveauMotDePasse));
-
             return ResponseEntity.ok("Mot de passe modifié avec succès.");
         } catch (IllegalArgumentException | NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            log.error("Erreur lors de la modification du mot de passe", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Une erreur interne s'est produite.");
         }
     }
 

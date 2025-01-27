@@ -63,6 +63,10 @@ public class Activite {
     @JoinColumn(name = "created_by")
     private Utilisateur createdBy;
 
+    @ManyToOne
+    @JoinColumn(name = "salleId")
+    private Salle salleId;
+
 
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Activite(Long id) {
