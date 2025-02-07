@@ -42,6 +42,14 @@ public class Participant{
     @JsonBackReference("etapeResultatRef") // Nom unique pour la référence
     private Etape etapeResultat;
 
+    @ManyToOne
+    @JoinColumn(name = "liste_id")
+    @JsonBackReference("listeRef")
+    private Liste liste;
 
+    // Ajoutez un constructeur prenant un ID
+    public Participant(Long id) {
+        this.id = id;
+    }
 
 }

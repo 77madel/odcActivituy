@@ -9,9 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Data
@@ -38,6 +36,10 @@ public class Etape {
     private Date dateFin;
 
     private Statut statut;
+
+    @OneToMany(mappedBy = "etape", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Pour la sérialisation
+    private Set<Liste> liste = new HashSet<>();
 
     public void addParticipantsToListeDebut(List<Participant> participants) {
         for (Participant participant : participants) {

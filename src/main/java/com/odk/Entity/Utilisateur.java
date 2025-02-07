@@ -55,8 +55,10 @@ public class Utilisateur implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.getNom()));
     }
+
     @Override
     public String getUsername() {
+
         return email;
     }
 

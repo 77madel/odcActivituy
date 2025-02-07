@@ -2,6 +2,7 @@ package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Critere;
 import com.odk.Entity.Etape;
+import com.odk.Entity.Liste;
 import com.odk.Entity.Participant;
 import com.odk.Repository.*;
 import com.odk.Service.Interface.CrudService;
@@ -17,9 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -35,6 +38,7 @@ public class EtapeService implements CrudService<Etape, Long> {
     private ParticipantRepository participantRepository;
     private ActiviteParticipantRepository activiteParticipantRepository;
     private CritereRepository critereRepository;
+    private ListeRepository listeRepository;
 
 
     private static final Logger logger = LoggerFactory.getLogger(EtapeService.class);
@@ -67,10 +71,13 @@ public class EtapeService implements CrudService<Etape, Long> {
     }
 
     @Override
+    @Transactional
     public Etape add(Etape etape) {
-        etape.mettreAJourStatut(); // Mise à jour du statut avant sauvegarde
-        return etapeRepository.save(etape);
+        etape.mettreAJourStatut();
+         return etapeRepository.save(etape);
     }
+
+
 
     @Override
     public List<Etape> List() {
@@ -154,13 +161,48 @@ public class EtapeService implements CrudService<Etape, Long> {
         Etape etape = etapeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Étape non trouvée avec l'ID : " + id));
 
-        // Ajouter les participants à la bonne liste (liste début ou liste résultat)
+//        // Récupérer la liste associée à cette étape
+//        Liste liste = listeRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Liste non trouvée pour cette étape"));
+
+
+        Set<Liste> listes = etape.getListe(); // Récupérer le Set de Listes
+
+        Liste listeAMettreAJour = null;
+
         if (toListeDebut) {
-            System.out.println("Ajout à la liste de début");
-            etape.addParticipantsToListeDebut(participants);
+            listeAMettreAJour = listes.stream().filter(Liste::isListeDebut).findFirst().orElse(null);
+            if (listeAMettreAJour == null) {
+                listeAMettreAJour = new Liste();
+                listeAMettreAJour.setEtape(etape);
+                listeAMettreAJour.setListeDebut(true);
+                listeAMettreAJour.setDateHeure(LocalDateTime.now());
+                listes.add(listeAMettreAJour); // Ajouter la nouvelle Liste au Set
+            }
         } else {
-            System.out.println("Ajout à la liste de résultat");
-            etape.addParticipantsToListeResultat(participants);
+            listeAMettreAJour = listes.stream().filter(Liste::isListeResultat).findFirst().orElse(null);
+            if (listeAMettreAJour == null) {
+                listeAMettreAJour = new Liste();
+                listeAMettreAJour.setEtape(etape);
+                listeAMettreAJour.setListeResultat(true);
+                listeAMettreAJour.setDateHeure(LocalDateTime.now());
+                listes.add(listeAMettreAJour); // Ajouter la nouvelle Liste au Set
+            }
+        }
+
+        if (listeAMettreAJour != null) { // S'assurer que vous avez trouvé ou créé une Liste
+            for (Participant participant : participants) {
+                participant.setListe(listeAMettreAJour);
+            }
+
+            if (toListeDebut) {
+                etape.addParticipantsToListeDebut(participants);
+            } else {
+                etape.addParticipantsToListeResultat(participants);
+            }
+
+            listeRepository.save(listeAMettreAJour); // Enregistrer la Liste mise à jour
+            etapeRepository.save(etape); // Enregistrer l'Etape (se propage en cascade)
         }
 
         // Sauvegarder les participants et l'étape dans la base de données

@@ -63,8 +63,10 @@ public class Login {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Échec de l'authentification");
             }
         } catch (BadCredentialsException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nom d'utilisateur ou mot de passe incorrect");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur de connexion: " + e.getMessage());
         }
     }
@@ -111,11 +113,6 @@ public class Login {
     }
 
     // 3. Déconnexion - Invalider le token JWT si utilisé
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-        SecurityContextHolder.clearContext();  // Efface le contexte de sécurité de Spring Security
-        return new ResponseEntity<>("Déconnecté avec succès.", HttpStatus.OK);
-    }
 
     // Exemple de méthode pour envoyer un email (à implémenter ou intégrer un service d'envoi d'email)
     private void sendEmailWithResetLink(String email, String resetPasswordLink) {

@@ -100,21 +100,6 @@ public class ExcelHelper {
                 throw new RuntimeException("Type de cellule inattendu pour le téléphone");
             }
             participant.setGenre(row.getCell(4).getStringCellValue());
-            /*if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {
-                String nom = row.getCell(5).getStringCellValue();
-
-                // Chercher l'activité par nom dans la base de données
-                Optional<Activite> activiteOptional = activiteRepository.findByNom(nom);
-
-                if (activiteOptional.isPresent()) {
-                    participant.setActivite(activiteOptional.get());
-                } else {
-                    throw new RuntimeException("L'activité " + nom + " n'existe pas dans la base de données.");
-                }
-            } else {
-
-                throw new RuntimeException("La cellule de l'activité est vide ou contient un type incorrect.");
-            }*/
 
             // Vérification si la cellule de l'activité est non nulle et de type chaîne
             if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {

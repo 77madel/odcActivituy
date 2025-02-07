@@ -74,8 +74,10 @@ public class EtapeController {
             etapeService.addParticipantsToEtape(id, file, toListeDebut);
             return ResponseEntity.ok(new ResponseMessage("Participants ajoutés avec succès"));
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));
         } catch (IOException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Erreur lors de l'importation du fichier"));
         }
     }

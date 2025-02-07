@@ -17,7 +17,7 @@ public class SalleController {
 
     private SalleService salleService;
 
-    @PostMapping("/ajout")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Salle ajouter(@RequestBody Salle salle) {
 
