@@ -11,7 +11,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/odcformation
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: madoumata
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       - postgres-db
@@ -23,7 +23,7 @@ services:
     environment:
       POSTGRES_DB: odcformation
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: madoumata
+      POSTGRES_PASSWORD: postgres
 #    ports:
 #      - "5432:5432"
     volumes:
@@ -37,19 +37,6 @@ services:
       - "8081:8080"
     networks:
       - odc-network
-  frontend: # Ajout du service frontend
-    build: # Configuration de la construction de l'image
-      context: ./frontend # Le répertoire contenant le Dockerfile du frontend
-      dockerfile: Dockerfile  # Le nom du Dockerfile du frontend
-    ports:
-      - "4200:80" # Mappage des ports (hôte:conteneur)
-    environment:
-      API_URL: http://springboot-app:8080 # URL de l'API backend (important !)
-    depends_on:
-      - springboot-app # S'assurer que le backend est démarré avant le frontend
-    networks:
-      - odc-network # Le même réseau que le backend
-
 volumes:
   postgres_data:
 networks:

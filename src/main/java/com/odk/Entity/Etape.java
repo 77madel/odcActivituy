@@ -38,8 +38,12 @@ public class Etape {
     private Statut statut;
 
     @OneToMany(mappedBy = "etape", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Pour la sérialisation
+    @JsonManagedReference("etape-liste")  // Doit correspondre à `@JsonBackReference`
     private Set<Liste> liste = new HashSet<>();
+
+    @ManyToMany(mappedBy = "etapes")
+    @JsonBackReference
+    private List<Activite> activites = new ArrayList<>();
 
     public void addParticipantsToListeDebut(List<Participant> participants) {
         for (Participant participant : participants) {

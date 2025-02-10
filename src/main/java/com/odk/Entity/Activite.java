@@ -1,6 +1,7 @@
 package com.odk.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
 import lombok.*;

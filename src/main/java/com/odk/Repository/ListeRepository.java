@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ListeRepository  extends JpaRepository<Liste, Long> {
 
-    Optional<Liste> findById(Long id);
+//    Optional<Liste> findById(Long id);
 }

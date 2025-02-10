@@ -1,10 +1,13 @@
 package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Liste;
+import com.odk.Entity.Utilisateur;
 import com.odk.Repository.ListeRepository;
+import com.odk.Repository.ParticipantRepository;
 import com.odk.Service.Interface.CrudService;
 import com.odk.dto.ListeDTO;
 import com.odk.dto.ListeMapper;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 public class ListeService implements CrudService<Liste, Long> {
 
     private ListeRepository listeRepository;
-    private ListeMapper listeMapper;
+    private ParticipantRepository participantRepository;
 
     @Override
     public Liste add(Liste liste) {
@@ -26,13 +29,15 @@ public class ListeService implements CrudService<Liste, Long> {
 
     public List<ListeDTO> getAllListes() {
         return listeRepository.findAll().stream()
-                .map(listeMapper::toListeDTO)
+                .map(ListeDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public Optional<Liste> getFindById(Long id) {  // Retourner Optional<Liste> ici
-        return listeRepository.findById(id);
+    public Optional<ListeDTO> getFindById(Long id) {
+        return listeRepository.findById(id)
+                .map(ListeDTO::new); // Convertir en DTO
     }
+
 
     @Override
     public List<Liste> List() {
@@ -51,7 +56,13 @@ public class ListeService implements CrudService<Liste, Long> {
     }
 
     @Override
-    public void delete(Long aLong) {
+    @Transactional
+    public void delete(Long id) {
+        // Supprime d'abord les participants liés
+        participantRepository.deleteByListeId(id);
+
+        Optional<Liste> listeOptional = listeRepository.findById(id);
+        listeOptional.ifPresent(liste -> listeRepository.deleteById(id));
 
     }
 }

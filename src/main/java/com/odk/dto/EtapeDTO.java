@@ -18,6 +18,7 @@ public class EtapeDTO {
     private List<ParticipantDTO> listeDebut;
     private List<ParticipantDTO> listeResultat;
 
+
     public EtapeDTO() {
         this.listeDebut = new ArrayList<>();
         this.listeResultat = new ArrayList<>();

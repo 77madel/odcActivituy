@@ -1,14 +1,14 @@
 package com.odk.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.odk.Entity.Activite;
-import com.odk.Entity.ActiviteParticipantKey;
-import com.odk.Entity.Participant;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+
+import static org.hibernate.annotations.OnDeleteAction.CASCADE;
 
 @Entity
 @Data
@@ -27,6 +27,7 @@ public class ActiviteParticipant {
     @ManyToOne
     @MapsId("participantId")
     @JoinColumn(name = "participant_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private Participant participant;
 
