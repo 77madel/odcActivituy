@@ -41,9 +41,9 @@ public class Etape {
     @JsonManagedReference("etape-liste")  // Doit correspondre à `@JsonBackReference`
     private Set<Liste> liste = new HashSet<>();
 
-    @ManyToMany(mappedBy = "etapes")
-    @JsonBackReference
-    private List<Activite> activites = new ArrayList<>();
+//    @ManyToMany(mappedBy = "etapes")
+//    @JsonBackReference
+//    private List<Activite> activites = new ArrayList<>();
 
     public void addParticipantsToListeDebut(List<Participant> participants) {
         for (Participant participant : participants) {

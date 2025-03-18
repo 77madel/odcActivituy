@@ -20,6 +20,7 @@ public interface EtapeMapper {
     // Convert Mission entity to DTO
     @Mapping(target = "listeDebut", source = "listeDebut") // Mapper la liste mais ne pas mapper d'activités
     @Mapping(target = "listeResultat", source = "listeResultat")
+    @Mapping(target = "activite.etapes", ignore = true) // Ignorer la relation
     EtapeDTO ETAPE_DTO(Etape etape);
 
     default List<ParticipantDTO> mapParticipants(List<Participant> participants) {
