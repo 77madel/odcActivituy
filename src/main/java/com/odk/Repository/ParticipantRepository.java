@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
@@ -24,6 +25,7 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
     @Modifying
     @Query("DELETE FROM Participant p WHERE p.liste.id = :listeId")
     void deleteByListeId(@Param("listeId") Long listeId);
+
 
 
 //    List<Participant> findByEtapeDebut(Long etapeDebutId);

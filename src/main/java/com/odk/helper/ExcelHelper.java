@@ -102,11 +102,15 @@ public class ExcelHelper {
             participant.setGenre(row.getCell(4).getStringCellValue());
 
             // Vérification si la cellule de l'activité est non nulle et de type chaîne
+//            if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {
+//                String nomActivite = row.getCell(5).getStringCellValue();
             if (row.getCell(5) != null && row.getCell(5).getCellType() == CellType.STRING) {
-                String nomActivite = row.getCell(5).getStringCellValue();
-                Optional<Activite> activiteOptional = activiteRepository.findByNom(nomActivite);
+                String nomActivite = row.getCell(5).getStringCellValue().trim(); // Suppression des espaces
+//                Optional<Activite> activiteOptional = activiteRepository.findByNom(nomActivite);
+                Optional<Activite> activiteOptional = activiteRepository.findByNomIgnoreCase(nomActivite); //Comparaison insensible a la case.
 
                 if (activiteOptional.isPresent()) {
+                    System.out.println(activiteOptional.get().getNom());
                     participant.setActivite(activiteOptional.get());
 
                     // Enregistrez le participant d'abord pour obtenir un ID valide
