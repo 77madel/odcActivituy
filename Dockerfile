@@ -33,8 +33,12 @@ WORKDIR /odc
 # Copier uniquement le .jar généré depuis l'étape précédente
 COPY --from=builder /app/target/OdcFormation-0.0.1-SNAPSHOT.jar activity.jar
 
+# Copier le script de "wait-for-it"
+COPY scripts/wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
 # Exposer le port Spring Boot
 EXPOSE 8080
 
 # Commande de lancement
-ENTRYPOINT ["java", "-jar", "activity.jar"]
+ENTRYPOINT ["/wait-for-it.sh", "postgres-db:5432", "--", "java", "-jar", "activity.jar"]
