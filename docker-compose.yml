@@ -1,4 +1,46 @@
-
+#
+#services:
+#  springboot-app:
+#    image: backend
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/odcformation
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: postgres
+#      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+#    depends_on:
+#      - postgres-db
+#    networks:
+#      - odc-network
+#
+#  postgres-db:
+#    image: postgres:16
+#    environment:
+#      POSTGRES_DB: odcformation
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+##    ports:
+##      - "5432:5432"
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    networks:
+#      - odc-network
+#
+#  adminer:
+#    image: adminer
+#    ports:
+#      - "8081:8080"
+#    networks:
+#      - odc-network
+#volumes:
+#  postgres_data:
+#networks:
+#  odc-network:
+#    driver: bridge
 services:
   springboot-app:
     image: backend
@@ -23,8 +65,6 @@ services:
       POSTGRES_DB: odcformation
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-#    ports:
-#      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
