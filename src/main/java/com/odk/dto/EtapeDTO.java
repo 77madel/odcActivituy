@@ -14,7 +14,7 @@ public class EtapeDTO {
     private Long id;
     private String nom;
     private Statut statut;
-    private ActiviteDTO activite;
+//    private ActiviteDTO activite;
     private List<CritereDTO> critere;
     private List<ParticipantDTO> listeDebut;
     private List<ParticipantDTO> listeResultat;

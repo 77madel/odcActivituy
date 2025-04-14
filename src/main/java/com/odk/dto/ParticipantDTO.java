@@ -28,6 +28,7 @@ public class ParticipantDTO {
         this.email = email;
         this.phone = phone;
         this.genre = genre;
+        this.activite = getActivite();
         this.checkedIn = checkedIn;
         this.checkInTime = checkInTime;
     }
@@ -39,11 +40,10 @@ public class ParticipantDTO {
         this.email = participant.getEmail();
         this.phone = participant.getPhone();
         this.genre = participant.getGenre();
+        this.activite = participant.getActivite();
         this.checkedIn = participant.isCheckedIn();
         this.checkInTime = participant.getCheckInTime();
 
-        // Récupérer le nom de l'activité au lieu de l'ID
-        this.activite = participant.getActivite();
     }
 
     public ParticipantDTO(Long id, String nom) {

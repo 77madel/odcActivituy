@@ -52,7 +52,6 @@ public class EntiteOdcService implements CrudService<Entite, Long> {
             if (entity.getResponsable() != null) {
                 existingEntite.setResponsable(entity.getResponsable());
             }
-            // Mettez à jour d'autres champs nécessaires ici
 
             // Sauvegarder les modifications dans la base de données
             return entiteOdcRepository.save(existingEntite);

@@ -55,12 +55,14 @@ public class EntiteOdcController {
             if (utilisateurOpt.isPresent()) {
                 Utilisateur utilisateur = utilisateurOpt.get();
 
-                // Vérifier que l'utilisateur a le rôle de "Personnel"
-                if (utilisateur.getRole().getNom().equals("PERSONNEL")) {
-                    entite.setResponsable(utilisateur);
-                } else {
-                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
-                }
+                entite.setResponsable(utilisateur);
+//
+//                // Vérifier que l'utilisateur a le rôle de "Personnel"
+//                if (utilisateur.getRole().getNom().equals("PERSONNEL")) {
+//                    entite.setResponsable(utilisateur);
+//                } else {
+//                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
+//                }
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé avec l'ID : " + utilisateurId);
             }

@@ -14,7 +14,7 @@ public interface ParticipantMapper {
 
     // Convert Mission entity to DTO
 //    @Mapping(source = "etapeDebut", target = "etapeDebut", ignore = true)
-//    @Mapping(target = "activite", ignore = true)
+      @Mapping(target = "activite")
 //    @Mapping(source = "etapeResultat", target = "etapeResultat")
     ParticipantDTO PARTICIPANT_DTO(Participant participant);
 
