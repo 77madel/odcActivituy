@@ -2,6 +2,7 @@ package com.odk.Controller;
 
 import com.odk.Entity.TypeActivite;
 import com.odk.Service.Interface.Service.TypeActiviteService;
+import com.odk.dto.TypeActiviteDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,11 @@ public class TypeActiviteController {
     @ResponseStatus(HttpStatus.OK)
     public List<TypeActivite> getAllEtapes() {
         return typeActiviteService.List(); // Utilise le service pour récupérer les étapes sous forme de DTO
+    }
+
+    @GetMapping("/by-entite/{entiteId}")
+    public List<TypeActiviteDTO> getByEntite(@PathVariable Long entiteId) {
+        return typeActiviteService.getByEntiteId(entiteId);
     }
 
     @PatchMapping("/{id}")

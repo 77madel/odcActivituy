@@ -20,6 +20,7 @@ public class Etape {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
+
     @ManyToOne
     @JoinColumn(name = "activite_id")
     @JsonBackReference

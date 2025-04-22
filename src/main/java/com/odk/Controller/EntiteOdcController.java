@@ -3,11 +3,14 @@ package com.odk.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odk.Entity.Entite;
+import com.odk.Entity.TypeActivite;
 import com.odk.Entity.Utilisateur;
 import com.odk.Repository.EntiteOdcRepository;
+import com.odk.Repository.TypeActiviteRepository;
 import com.odk.Service.Interface.Service.EntiteOdcService;
 import com.odk.Service.Interface.Service.FileStorage;
 import com.odk.Service.Interface.Service.UtilisateurService;
+import com.odk.dto.EntiteDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -33,13 +36,15 @@ public class EntiteOdcController {
     private EntiteOdcService entiteOdcService;
     private FileStorage fileStorage;
     private UtilisateurService utilisateurService;
+    private TypeActiviteRepository typeActiviteRepository;
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Entite> ajout(
             @RequestPart("entiteOdc") String entiteOdcJson,
             @RequestPart("logo") MultipartFile logo,
-            @RequestParam("utilisateurId") Long utilisateurId) {
+            @RequestParam("utilisateurId") Long utilisateurId,
+            @RequestParam("typeActiviteIds") List<Long> typeActiviteIds) {
 
         try {
             // Convertir le JSON en objet Entite
@@ -56,16 +61,13 @@ public class EntiteOdcController {
                 Utilisateur utilisateur = utilisateurOpt.get();
 
                 entite.setResponsable(utilisateur);
-//
-//                // Vérifier que l'utilisateur a le rôle de "Personnel"
-//                if (utilisateur.getRole().getNom().equals("PERSONNEL")) {
-//                    entite.setResponsable(utilisateur);
-//                } else {
-//                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Seuls les utilisateurs ayant le rôle 'Personnel' peuvent être responsables.");
-//                }
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé avec l'ID : " + utilisateurId);
             }
+
+            // Récupérer les TypeActivite par leurs IDs
+            List<TypeActivite> typeActivites = typeActiviteRepository.findAllById(typeActiviteIds);
+            entite.setTypeActivites(typeActivites);
 
             // Ajouter l'entité
             Entite createdFormation = entiteOdcService.add(entite);
@@ -81,14 +83,16 @@ public class EntiteOdcController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Entite> ListerEntite(){
-        return entiteOdcService.List();
+    public List<EntiteDTO> ListerEntite(){
+        return entiteOdcService.allList();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<Entite> getEnitteParId(@PathVariable Long id){
-        return entiteOdcService.findById(id);
+    public ResponseEntity<EntiteDTO> getEntiteParId(@PathVariable Long id) {
+        return entiteOdcService.findParId(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PatchMapping("/{id}")

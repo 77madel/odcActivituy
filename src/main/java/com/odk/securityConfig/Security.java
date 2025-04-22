@@ -105,7 +105,7 @@ public class Security {
                                         .requestMatchers(GET,"/entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
                                         .requestMatchers("/images/**").permitAll()
                                         .requestMatchers("/typeActivite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
-                                        //.requestMatchers(GET,"/typeActivite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
+                                        .requestMatchers(GET,"/typeActivite/by-entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
                                         .requestMatchers("/utilisateur/**").hasRole("SUPERADMIN")
                                         .requestMatchers("/utilisateur/modifierMotDePasse").authenticated()
                                         .requestMatchers("/reporting/**").authenticated()

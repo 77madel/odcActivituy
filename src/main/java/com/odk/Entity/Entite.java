@@ -30,6 +30,14 @@ public class Entite {
     @JsonIgnore
     private Utilisateur responsable;
 
+    @ManyToMany
+    @JoinTable(
+            name = "entite_type_activite",
+            joinColumns = @JoinColumn(name = "entite_id"),
+            inverseJoinColumns = @JoinColumn(name = "type_activite_id")
+    )
+    private List<TypeActivite> typeActivites;
+
     // Ajout d'un constructeur prenant un ID pour la désérialisation
     public Entite(Long id) {
         this.id = id;

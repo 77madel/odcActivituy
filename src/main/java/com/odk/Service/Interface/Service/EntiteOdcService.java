@@ -5,6 +5,8 @@ import com.odk.Entity.Utilisateur;
 import com.odk.Repository.EntiteOdcRepository;
 import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.CrudService;
+import com.odk.dto.EntiteDTO;
+import com.odk.dto.EntiteMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +29,21 @@ public class EntiteOdcService implements CrudService<Entite, Long> {
         return entiteOdcRepository.findAll();
     }
 
+    public List<EntiteDTO> allList() {
+        return entiteOdcRepository.findAll()
+                .stream()
+                .map(EntiteMapper::toDto)
+                .toList();
+    }
+
     @Override
     public Optional<Entite> findById(Long id) {
         return entiteOdcRepository.findById(id);
+    }
+
+    public Optional<EntiteDTO> findParId(Long id) {
+        return entiteOdcRepository.findById(id)
+                .map(EntiteMapper::toDto);
     }
 
     @Override
@@ -51,6 +65,9 @@ public class EntiteOdcService implements CrudService<Entite, Long> {
             }
             if (entity.getResponsable() != null) {
                 existingEntite.setResponsable(entity.getResponsable());
+            }
+            if (entity.getTypeActivites() != null) {
+                existingEntite.setTypeActivites(entity.getTypeActivites());
             }
 
             // Sauvegarder les modifications dans la base de données
