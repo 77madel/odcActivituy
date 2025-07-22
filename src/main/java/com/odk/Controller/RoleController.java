@@ -4,6 +4,7 @@ import com.odk.Entity.Role;
 import com.odk.Service.Interface.Service.RoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +18,8 @@ public class RoleController {
 
     private RoleService roleService;
 
-    @PostMapping("/ajout")
+    @PostMapping
+    /*@PreAuthorize("hasRole('SUPERADMIN')")*/
     @ResponseStatus(HttpStatus.CREATED)
     public Role ajouter(@RequestBody Role role) {
         try {
@@ -27,7 +29,8 @@ public class RoleController {
         }
     }
 
-    @GetMapping("/listeRole")
+    @GetMapping
+   /* @PreAuthorize("hasRole('SUPERADMIN')")*/
     @ResponseStatus(HttpStatus.OK)
     public List<Role> listerRole() {
         try {
@@ -37,7 +40,8 @@ public class RoleController {
         }
     }
 
-    @GetMapping("/listeRole/{id}")
+    @GetMapping("/{id}")
+   /* @PreAuthorize("hasRole('SUPERADMIN')")*/
     @ResponseStatus(HttpStatus.OK)
     public Optional<Role> getRoleParId(@PathVariable Long id) {
         try {
@@ -47,7 +51,8 @@ public class RoleController {
         }
     }
 
-    @PutMapping("/modifier/{id}")
+    @PatchMapping("/{id}")
+    /*@PreAuthorize("hasRole('SUPERADMIN')")*/
     @ResponseStatus(HttpStatus.OK)
     public Role modifier(@PathVariable Long id, @RequestBody Role role) {
         try {
@@ -57,7 +62,8 @@ public class RoleController {
         }
     }
 
-    @DeleteMapping("/supprimer/{id}")
+    @DeleteMapping("/{id}")
+    /*@PreAuthorize("hasRole('SUPERADMIN')")*/
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void supprimer(@PathVariable Long id) {
         try {

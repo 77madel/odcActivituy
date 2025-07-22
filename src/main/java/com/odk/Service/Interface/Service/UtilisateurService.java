@@ -74,15 +74,6 @@ public class UtilisateurService implements UserDetailsService, CrudService<Utili
         utilisateur.setRole(role);
         Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
 
-//        // Envoyer un email avec le mot de passe et les informations du personnel
-//        String sujet = "Bienvenue dans notre équipe";
-//        String message = "Bonjour " + utilisateur.getNom() + ",\n\n"
-//                + "Votre compte a été créé avec succès. Voici vos informations de connexion :\n"
-//                + "Email : " + utilisateur.getEmail() + "\n"
-//                + "Mot de passe : " + rawPassword + "\n\n"
-//                + "Veuillez changer votre mot de passe après votre première connexion.\n\n"
-//                + "Cordialement,\n ODC.";
-//        emailService.sendSimpleEmail(utilisateur.getEmail(), sujet, message);
 
         // Construire le corps de l'email avec HTML pour une meilleure présentation
         StringBuilder emailBodyBuilder = new StringBuilder();

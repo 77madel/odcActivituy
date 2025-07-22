@@ -29,7 +29,7 @@ public class EntiteMapper {
                 entite.getNom(),
                 entite.getLogo(),
                 entite.getDescription(),
-                responsableId,
+                entite.getResponsable(),
                 typeActiviteIds
         );
     }
@@ -44,9 +44,9 @@ public class EntiteMapper {
         entite.setLogo(dto.getLogo());
         entite.setDescription(dto.getDescription());
 
-        if (dto.getResponsableId() != null) {
+        if (dto.getResponsable() != null) {
             Utilisateur responsable = new Utilisateur();
-            responsable.setId(dto.getResponsableId());
+            responsable.setId(dto.getResponsable().getId());
             entite.setResponsable(responsable);
         }
 

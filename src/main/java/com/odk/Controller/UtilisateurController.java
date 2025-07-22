@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,7 @@ public class UtilisateurController {
 
 
     @PostMapping
+    @PreAuthorize("hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Utilisateur ajouter(@RequestBody Utilisateur utilisateur){
 
@@ -41,6 +43,7 @@ public class UtilisateurController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public List<UtilisateurDTO> Liste(){
 
@@ -48,18 +51,21 @@ public class UtilisateurController {
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Utilisateur> getPersonnelParId(@PathVariable Long id){
         return utilisateurService.findById(id);
     }
 
     @PatchMapping("{id}")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public Utilisateur Modifier(@PathVariable Long id, @RequestBody Utilisateur utilisateur ){
         return utilisateurService.update(utilisateur,id);
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void  supprimer(@PathVariable Long id){
 
@@ -67,6 +73,7 @@ public class UtilisateurController {
     }
 
     @GetMapping("/nombre") // Pas de paramètres
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Long> getNombreUtilisateurs() {
         long count = utilisateurService.getNombreUtilisateurs();
         return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs

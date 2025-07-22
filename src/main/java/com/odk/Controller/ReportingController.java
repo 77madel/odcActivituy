@@ -5,6 +5,7 @@ import com.odk.Service.Interface.Service.ActiviteParticipantService;
 import com.odk.Service.Interface.Service.ReportingService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ReportingController {
     private ActiviteParticipantService activiteParticipantService;
 
     @GetMapping("/counts-by-genre")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public Map<String, Long> getCountsByGenre() {
         return activiteParticipantService.getCountsByGenre();
     }
@@ -29,12 +31,14 @@ public class ReportingController {
         return ResponseEntity.ok(stats);
     }*/
     @GetMapping("/participants-par-genre")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<List<StatistiqueGenre>> StatistiquesParGenre() {
         List<StatistiqueGenre> stats = reportingService.StatistiquesParGenre();
         return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/participant")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<Map<String, Object>> getEtapeStatistics() {
         return ResponseEntity.ok(reportingService.getParticipantStatistics());
     }

@@ -1,6 +1,7 @@
 package com.odk.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.odk.Enum.Statut;
@@ -33,7 +34,9 @@ public class Etape {
     @OneToMany(mappedBy = "etapeResultat", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("etapeResultatRef")
     private List<Participant> listeResultat = new ArrayList<>();
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateDebut;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateFin;
 
     private Statut statut;

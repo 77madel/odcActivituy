@@ -6,6 +6,7 @@ import com.odk.Entity.Liste;
 import com.odk.Entity.Participant;
 import com.odk.Repository.*;
 import com.odk.Service.Interface.CrudService;
+import com.odk.dto.CritereDTO;
 import com.odk.dto.EtapeDTO;
 import com.odk.dto.EtapeMapper;
 import com.odk.dto.ParticipantDTO;
@@ -48,6 +49,8 @@ public class EtapeService implements CrudService<Etape, Long> {
         EtapeDTO dto = new EtapeDTO();
         dto.setId(etape.getId());
         dto.setNom(etape.getNom());
+        dto.setDateDebut(etape.getDateDebut());
+        dto.setDateFin(etape.getDateFin());
         dto.setStatut(etape.getStatut());
 
         // Initialisation des listes si elles ne le sont pas déjà
@@ -67,7 +70,22 @@ public class EtapeService implements CrudService<Etape, Long> {
                     .collect(Collectors.toList()));
         }
 
+        // Convertir les Critere en CritereDTO si nécessaire
+        if (etape.getCritere() != null) {
+            dto.setCritere(etape.getCritere().stream()
+                    .map(this::convertToCritereDto) // Créez une méthode convertToCritereDto
+                    .collect(Collectors.toList()));
+        }
+
         return dto;
+    }
+
+    // Méthode pour convertir Critere en CritereDTO (à implémenter)
+    private CritereDTO convertToCritereDto(Critere critere) {
+        CritereDTO critereDTO = new CritereDTO();
+        critereDTO.setId(critere.getId());
+        // Définir les autres propriétés de CritereDTO
+        return critereDTO;
     }
 
     @Override
@@ -84,6 +102,14 @@ public class EtapeService implements CrudService<Etape, Long> {
         return etapeRepository.findAll();
     }
 
+
+
+    public List<EtapeDTO> getByIdEtapes(Long id) {
+        List<Etape> etapes = etapeRepository.findAll();
+        return etapes.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
 
     public List<EtapeDTO> getAllEtapes() {
         List<Etape> etapes = etapeRepository.findAll();
@@ -109,6 +135,14 @@ public class EtapeService implements CrudService<Etape, Long> {
             // Si le statut n'est pas nul, mettre à jour
             if (entity.getStatut() != null) {
                 e.setStatut(entity.getStatut());
+            }
+
+            if (entity.getDateDebut() != null) {
+                e.setDateDebut(entity.getDateDebut());
+            }
+
+            if (entity.getDateFin() != null) {
+                e.setDateFin(entity.getDateFin());
             }
 
             // Si l'activité est définie, la mettre à jour (vérifier si elle existe)

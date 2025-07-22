@@ -47,11 +47,12 @@ public class ActiviteService implements CrudService<Activite, Long> {
             List<Activite> conflits = activiteRepository.findConflictingActivites(
                     entity.getSalleId().getId(),
                     entity.getDateDebut(),
-                    entity.getDateFin()
+                    entity.getDateFin(),
+                    Statut.Termine // Passer l'énumération Statut.Termine
             );
 
             if (!conflits.isEmpty()) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "La salle est déjà réservée.");
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "La salle est déjà réservée pour une activité en cours ou en attente.");
             }
 
             // Mettre à jour le statut de l'activité
@@ -194,8 +195,8 @@ public class ActiviteService implements CrudService<Activite, Long> {
                 a.getEtapes().addAll(activite.getEtapes());
             }
 
-            // Mettre à jour les étapes
-            updateEtapes(a, activite.getEtapes());
+           /* // Mettre à jour les étapes
+            updateEtapes(a, activite.getEtapes());*/
 
             // Mettre à jour le statut
             a.mettreAJourStatut();
@@ -205,11 +206,11 @@ public class ActiviteService implements CrudService<Activite, Long> {
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "L'activité avec l'ID spécifié n'existe pas."));
     }
 
-    private void updateEtapes(Activite activite, List<Etape> nouvellesEtapes) {
+ /*   private void updateEtapes(Activite activite, List<Etape> nouvellesEtapes) {
         // Supprimer les étapes qui ne sont plus associées
         // Ajouter les nouvelles étapes
         activite.getEtapes().addAll(nouvellesEtapes);
-    }
+    }*/
 
 
     @Override

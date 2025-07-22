@@ -90,27 +90,57 @@ public class Security {
                         authorize ->
                                 authorize
                                         .requestMatchers("/auth/**").permitAll()  // Autoriser les routes d'authentification
+/*
                                         .requestMatchers("/participant/**").hasAnyRole("PERSONNEL", "SUPERADMIN")  // Autoriser les routes d'authentification
+*/
+                                        //.requestMatchers("/participant/**").permitAll() // Autoriser les routes d'authentification
+/*
                                         .requestMatchers("/utilisateur/{id}").hasAnyRole("PERSONNEL","SUPERADMIN")  // Autoriser les routes d'authentification
+*/
+/*
                                         .requestMatchers("/etape/{id}/participants/upload").hasRole("PERSONNEL")
-                                        .requestMatchers("/etape/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+*/
+                                        //.requestMatchers("/etape/**").permitAll()
+                                        //.requestMatchers("/liste/**").permitAll()
                                         //.requestMatchers(GET,"/etape/**").hasAnyRole("PERSONNEL","SUPERADMIN")
-                                        .requestMatchers("/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+                                       // .requestMatchers("/activite/**").permitAll()
+                                        /*.requestMatchers("/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")*/
+/*
                                         .requestMatchers("/salle/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+*/
+                                        //.requestMatchers("/salle/**").permitAll()
                                         //.requestMatchers(GET,"/activite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+/*
                                         .requestMatchers("/activite/enCours").hasRole("SUPERADMIN")
-                                        .requestMatchers("/critere/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+*/
+                                        //.requestMatchers("/critere/**").permitAll()
                                         //.requestMatchers(GET,"/critere/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+/*
                                         .requestMatchers(HttpMethod.POST,"/entite/**").hasRole("SUPERADMIN")
+*/
+                                        //.requestMatchers("/entite/**").permitAll()
+/*
                                         .requestMatchers(GET,"/entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
+*/
                                         .requestMatchers("/images/**").permitAll()
+/*
                                         .requestMatchers("/typeActivite/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+*/
+                                       // .requestMatchers("/typeActivite/**").permitAll()
+/*
                                         .requestMatchers(GET,"/typeActivite/by-entite/**").hasAnyRole("SUPERADMIN","PERSONNEL")
+*/
+/*
                                         .requestMatchers("/utilisateur/**").hasRole("SUPERADMIN")
+*/
+                                       // .requestMatchers("/utilisateur/**").permitAll()
                                         .requestMatchers("/utilisateur/modifierMotDePasse").authenticated()
-                                        .requestMatchers("/reporting/**").authenticated()
+                                       // .requestMatchers("/reporting/**").permitAll()
+                                        /*.requestMatchers("/reporting/**").authenticated()*/
                                         .requestMatchers("/role/**").hasRole("SUPERADMIN")
-                                        .requestMatchers("/blacklist/**").hasAnyRole("PERSONNEL","SUPERADMIN")
+                                        //.requestMatchers("/role/**").permitAll()
+                                        /*.requestMatchers("/blacklist/**").hasAnyRole("PERSONNEL","SUPERADMIN")*/
+                                       // .requestMatchers("/blacklist/**").permitAll()
                                         //.requestMatchers(GET,"/blacklist/**").hasAnyRole("SUPERADMIN","PERSONNEL")
                                         .anyRequest().authenticated()
                 )

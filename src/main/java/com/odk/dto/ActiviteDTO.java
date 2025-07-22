@@ -1,5 +1,6 @@
 package com.odk.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.odk.Entity.Entite;
 import com.odk.Entity.Etape;
 import com.odk.Entity.Salle;
@@ -15,7 +16,9 @@ public class ActiviteDTO {
     private Long id;
     private String nom;
     private String titre;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateDebut;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateFin;
     private Statut statut;
     private String lieu;

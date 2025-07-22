@@ -11,6 +11,7 @@ import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,6 +32,7 @@ public class ActiviteController {
     private EtapeRepository etapeRepository;
 
     @PostMapping
+    @PreAuthorize("hasRole('PERSONNEL')")
     public Activite ajouter(@RequestBody Activite activite) {
         try {
             return activiteService.add(activite);
@@ -43,6 +45,7 @@ public class ActiviteController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public List<ActiviteDTO> listerActivite() {
         return activiteService.List().stream()
@@ -90,6 +93,7 @@ public class ActiviteController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Activite> getActiviteParId(@PathVariable Long id) {
         try {
@@ -100,6 +104,7 @@ public class ActiviteController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('PERSONNEL')")
     @ResponseStatus(HttpStatus.OK)
     public Activite modifier(@PathVariable Long id, @RequestBody Activite activite) {
             return activiteService.update(activite, id);
@@ -122,6 +127,7 @@ public class ActiviteController {
 
 
     @GetMapping("/enCours")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public List<ActiviteDTO> listerActiviteEncours() {
         return activiteService.List().stream()
                 .map(activite -> {
@@ -177,12 +183,14 @@ public class ActiviteController {
     }
 
     @GetMapping("/nombre") // Pas de paramètres
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<Long> getNombreActivite() {
         long count = activiteRepository.count();
         return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs
     }
 
     @GetMapping("/nombreActivitesEncours")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<Long> getNombreActivitesEncours() {
         long count = activiteRepository.countByStatut(Statut.En_Cours); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités
@@ -195,6 +203,7 @@ public class ActiviteController {
     }
 
     @GetMapping("/nombreActivitesTerminer")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<Long> getNombreActivitesTerminer() {
         long count = activiteRepository.countByStatut(Statut.Termine); // Compte les activités avec statut "En_Cours"
         return ResponseEntity.ok(count); // Retourne le nombre d'activités

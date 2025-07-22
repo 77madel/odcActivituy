@@ -1,6 +1,7 @@
 package com.odk.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
@@ -23,9 +24,11 @@ public class Activite {
     private String titre;
 
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateDebut = new Date();
 
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date dateFin;
 
     private Statut statut;

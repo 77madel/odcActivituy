@@ -23,12 +23,23 @@ public interface ActiviteRepository extends JpaRepository<Activite, Long> {
    @Query("SELECT COUNT(a) FROM Activite a WHERE a.statut = :statut")
    long countByStatutCustom(@Param("statut") Statut statut);
 
-   @Query("SELECT a FROM Activite a WHERE a.salleId.id = :salleId AND " +
+  /* @Query("SELECT a FROM Activite a WHERE a.salleId.id = :salleId AND " +
            "((:dateDebut BETWEEN a.dateDebut AND a.dateFin) OR " +
            "(:dateFin BETWEEN a.dateDebut AND a.dateFin) OR " +
            "(a.dateDebut BETWEEN :dateDebut AND :dateFin)) AND " +
            "a.statut != com.odk.Enum.Statut.Termine")
-   List<Activite> findConflictingActivites(Long salleId, Date dateDebut, Date dateFin);
+   List<Activite> findConflictingActivites(Long salleId, Date dateDebut, Date dateFin);*/
+
+   @Query("SELECT a FROM Activite a " +
+           "WHERE a.salleId.id = :salleId " +
+           "AND ((:dateDebut < a.dateFin AND :dateFin > a.dateDebut)) " +
+           "AND a.statut <> :statutTermine")
+   List<Activite> findConflictingActivites(
+           @Param("salleId") Long salleId,
+           @Param("dateDebut") Date dateDebut,
+           @Param("dateFin") Date dateFin,
+           @Param("statutTermine") com.odk.Enum.Statut statutTermine
+   );
 
 
 }

@@ -18,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,6 +41,7 @@ public class EntiteOdcController {
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Entite> ajout(
             @RequestPart("entiteOdc") String entiteOdcJson,
             @RequestPart("logo") MultipartFile logo,
@@ -82,6 +84,7 @@ public class EntiteOdcController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public List<EntiteDTO> ListerEntite(){
         return entiteOdcService.allList();
@@ -96,11 +99,13 @@ public class EntiteOdcController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     public ResponseEntity<Entite> modifier(
             @PathVariable("id") Long entiteId,
             @RequestPart("entiteOdc") String entiteOdcJson,
             @RequestPart(value = "logo", required = false) MultipartFile logo,
-            @RequestParam(value = "utilisateurId", required = false) Long utilisateurId) {
+            @RequestParam(value = "utilisateurId", required = false) Long utilisateurId,
+            @RequestParam("typeActiviteIds") List<Long> typeActiviteIds){
         try {
             // Use 'entiteId' from the path variable
             Optional<Entite> entiteOpt = entiteOdcService.findById(entiteId);
@@ -139,6 +144,10 @@ public class EntiteOdcController {
             entite.setDescription(updatedEntite.getDescription());
             // Update other necessary fields here
 
+            // Récupérer les TypeActivite par leurs IDs
+            List<TypeActivite> typeActivites = typeActiviteRepository.findAllById(typeActiviteIds);
+            entite.setTypeActivites(typeActivites);
+
             // Save changes
             Entite updatedFormation = entiteOdcService.update(entite, entiteId);
             return ResponseEntity.ok(updatedFormation);
@@ -151,6 +160,7 @@ public class EntiteOdcController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void  supprimer(@PathVariable Long id){
         entiteOdcService.delete(id);
@@ -185,11 +195,13 @@ public class EntiteOdcController {
     }
 
     @GetMapping("get/{id}")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public Long countActivitiesByEntite(@PathVariable Long id) {
         return entiteOdcService.getCountOfActivitiesByEntiteId(id);
     }
 
     @GetMapping("/nombre") // Pas de paramètres
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<Long> getNombreEntite() {
         long count = entiteOdcRepository.count();
         return ResponseEntity.ok(count); // Retourne le nombre d'utilisateurs

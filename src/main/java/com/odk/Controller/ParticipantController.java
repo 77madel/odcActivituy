@@ -12,6 +12,7 @@ import com.odk.dto.ParticipantDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -28,7 +29,8 @@ public class ParticipantController {
     private BlackListService blackListService;
 
 
-    @PostMapping("/ajout")
+    @PostMapping
+    @PreAuthorize("hasRole('PERSONNEL')")
     @ResponseStatus(HttpStatus.CREATED)
     public Participant ajouter(@RequestBody Participant participant, Activite activite){
         Participant savedParticipant = participantService.addP(participant, activite.getId());
@@ -43,25 +45,29 @@ public class ParticipantController {
     }
 
 
-    @GetMapping("/liste")
+    @GetMapping
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public List<ParticipantDTO> ListerEntite(){
         return participantService.listParticipant();
     }
 
-    @GetMapping("/liste/{id}")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Participant> getParticipantParId(@PathVariable Long id){
         return participantService.findById(id);
     }
 
-    @PatchMapping("/modifier/{id}")
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('PERSONNEL')")
     @ResponseStatus(HttpStatus.CREATED)
     public Participant Modifier(@PathVariable Long id, @RequestBody Participant participant ){
         return participantService.update(participant,id);
     }
 
-    @DeleteMapping("/supprimer/{id}")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public void  supprimer(@PathVariable Long id){
         participantService.delete(id);
@@ -74,6 +80,7 @@ public class ParticipantController {
     }
 
     @GetMapping("/check")
+    @PreAuthorize("hasRole('PERSONNEL') or hasRole('SUPERADMIN')")
     public ResponseEntity<String> checkParticipant(@RequestParam String email, @RequestParam String phone) {
         boolean isBlacklisted = blackListService.isParticipantBlacklisted(email, phone);
         if (isBlacklisted) {
