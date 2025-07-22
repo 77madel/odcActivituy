@@ -41,4 +41,4 @@ RUN chmod +x /wait-for-it.sh
 EXPOSE 8080
 
 # Commande de lancement
-ENTRYPOINT ["/wait-for-it.sh", "postgres-db:5432", "--", "java", "-jar", "activity.jar"]
+ENTRYPOINT ["/wait-for-it.sh", "postgres-db:5432", "--timeout=60", "--", "java", "-jar", "activity.jar"]
