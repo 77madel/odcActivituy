@@ -9,7 +9,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("https://odc-web-6afd.onrender.com", "http://localhost:4200")
+                .allowedOriginPatterns("https://odc-web-6afd.onrender.com", "http://localhost:4200", "http://localhost:54039")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Ajoutez PATCH ici
                 .allowedHeaders("*")
                 .allowCredentials(true)
