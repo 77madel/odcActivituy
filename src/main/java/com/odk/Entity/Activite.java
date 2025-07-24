@@ -20,6 +20,7 @@ public class Activite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String nom;
     private String titre;
 
