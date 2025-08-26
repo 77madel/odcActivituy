@@ -4,6 +4,7 @@ import com.odk.Entity.Critere;
 import com.odk.Entity.Etape;
 import com.odk.Entity.Liste;
 import com.odk.Entity.Participant;
+import com.odk.Enum.Statut;
 import com.odk.Repository.*;
 import com.odk.Service.Interface.CrudService;
 import com.odk.dto.CritereDTO;
@@ -20,10 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -250,6 +248,35 @@ public class EtapeService implements CrudService<Etape, Long> {
         return EtapeMapper.INSTANCE.listeEtape(etapeRepository.findEtapeById(id));
     }
 
+    public boolean isEtapeModifiable(Long etapeId) {
+        Etape etape = etapeRepository.findById(etapeId)
+                .orElseThrow(() -> new RuntimeException("Étape non trouvée"));
 
+        Date maintenant = new Date();
 
+        // Vérifier si l'étape est terminée par la date
+        if (etape.getDateFin() != null && maintenant.after(etape.getDateFin())) {
+            return false;
+        }
+
+        // Vérifier si l'étape a le statut terminé
+        if (etape.getStatut() == Statut.Termine) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void validateEtapeForModification(Long etapeId) {
+        if (!isEtapeModifiable(etapeId)) {
+            throw new EtapeTermineeException("L'étape est terminée et ne peut plus être modifiée");
+        }
+    }
+
+    public static class EtapeTermineeException extends RuntimeException {
+        public EtapeTermineeException(String message) {
+            super(message);
+        }
+
+    }
 }

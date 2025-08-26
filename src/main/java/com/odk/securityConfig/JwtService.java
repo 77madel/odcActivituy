@@ -82,6 +82,9 @@ public class JwtService {
                 "id", utilisateur.getId(),
                 "nom", utilisateur.getNom(),
                 "prenom", utilisateur.getPrenom(),
+                "genre", utilisateur.getGenre(),
+                "email", utilisateur.getEmail(),
+                "phone", utilisateur.getPhone(),
                 "role", utilisateur.getRole().getNom(),
                 Claims.EXPIRATION, new Date(expirationTime),
                 Claims.SUBJECT, utilisateur.getEmail()

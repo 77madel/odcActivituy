@@ -2,7 +2,6 @@ package com.odk.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.odk.Enum.Statut;
 import jakarta.persistence.*;
@@ -76,6 +75,7 @@ public class Etape {
     private List<Critere> critere;
 
     // Ajoutez un constructeur prenant un ID
+
     public Etape(Long id) {
         this.id = id;
     }

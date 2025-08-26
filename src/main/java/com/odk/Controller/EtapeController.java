@@ -73,12 +73,35 @@ public class EtapeController {
         etapeService.delete(id);
     }
 
-    @PostMapping("/{id}/participants/upload")
+   /* @PostMapping("/{id}/participants/upload")
     @PreAuthorize("hasRole('PERSONNEL')")
     public ResponseEntity<?> uploadParticipants(@PathVariable Long id, @RequestParam("file") MultipartFile file, @RequestParam boolean toListeDebut) {
         try {
             etapeService.addParticipantsToEtape(id, file, toListeDebut);
             return ResponseEntity.ok(new ResponseMessage("Participants ajoutés avec succès"));
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseMessage("Erreur lors de l'importation du fichier"));
+        }
+    }*/
+
+    @PostMapping("/{id}/participants/upload")
+    @PreAuthorize("hasRole('PERSONNEL')")
+    public ResponseEntity<?> uploadParticipants(@PathVariable Long id, @RequestParam("file") MultipartFile file, @RequestParam boolean toListeDebut) {
+        try {
+            // Valider que l'étape peut être modifiée
+            etapeService.validateEtapeForModification(id);
+
+            // Procéder à l'ajout des participants
+            etapeService.addParticipantsToEtape(id, file, toListeDebut);
+            return ResponseEntity.ok(new ResponseMessage("Participants ajoutés avec succès"));
+
+        } catch (EtapeService.EtapeTermineeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ResponseMessage("Impossible d'ajouter des participants : " + e.getMessage()));
         } catch (RuntimeException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseMessage(e.getMessage()));

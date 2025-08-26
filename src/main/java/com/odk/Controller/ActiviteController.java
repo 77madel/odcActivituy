@@ -15,10 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -111,19 +108,17 @@ public class ActiviteController {
     }
 
     @DeleteMapping("/{id}")
-//    public ResponseEntity<?> supprimerActivite(@PathVariable Long id) {
-//        try {
-//            activiteService.delete(id);
-//            return ResponseEntity.noContent().build();
-//        } catch (ResponseStatusException e) {
-//            throw e; // Laissez passer l'exception si elle provient du service
-//        } catch (Exception e) {
-//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la suppression de l'activité", e);
-//        }
-//    }
-    public void deleteActivite(@PathVariable Long id) {
+    public ResponseEntity<Map<String, String>> deleteActivite(@PathVariable Long id) {
         activiteService.delete(id);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Activité supprimée avec succès");
+
+        return ResponseEntity.ok(response);
     }
+   /* public void deleteActivite(@PathVariable Long id) {
+        activiteService.delete(id);
+    }*/
 
 
     @GetMapping("/enCours")

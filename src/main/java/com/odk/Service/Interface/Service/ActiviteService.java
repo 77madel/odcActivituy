@@ -1,26 +1,21 @@
 package com.odk.Service.Interface.Service;
 
 import com.odk.Entity.Activite;
-import com.odk.Entity.Etape;
 import com.odk.Entity.Utilisateur;
 import com.odk.Enum.Statut;
 import com.odk.Repository.ActiviteRepository;
 import com.odk.Repository.UtilisateurRepository;
 import com.odk.Service.Interface.CrudService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
