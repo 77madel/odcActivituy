@@ -13,8 +13,8 @@ public class FileStorage {
 
     // Dossiers de destination pour les fichiers
     private final String images = "images/";
-    private final String lien = "http://localhost:8080";  // URL publique pour le frontend
-    //private final String lien = "https://odcactivituy.onrender.com";  // URL publique pour le frontend
+    //private final String lien = "http://localhost:8080";  // URL publique pour le frontend
+    private final String lien = "https://odc-api.onrender.com";  // URL publique pour le frontend
 
     public String saveImage(MultipartFile fichier) throws IOException {
         return saveFile(fichier, images, "image");
